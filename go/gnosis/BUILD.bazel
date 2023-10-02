@@ -5,7 +5,10 @@ go_library(
     srcs = ["csv.go"],
     importpath = "github.com/proofxyz/solgo/go/gnosis",
     visibility = ["//visibility:public"],
-    deps = ["@com_github_ethereum_go_ethereum//common"],
+    deps = [
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_shopspring_decimal//:decimal",
+    ],
 )
 
 go_test(
@@ -16,5 +19,6 @@ go_test(
         "@com_github_ethereum_go_ethereum//common",
         "@com_github_gocarina_gocsv//:gocsv",
         "@com_github_google_go_cmp//cmp",
+        "@com_github_shopspring_decimal//:decimal",
     ],
 )

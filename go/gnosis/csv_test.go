@@ -6,6 +6,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gocarina/gocsv"
 	"github.com/google/go-cmp/cmp"
+	"github.com/shopspring/decimal"
 )
 
 func TestCSVConversion(t *testing.T) {
@@ -16,14 +17,14 @@ func TestCSVConversion(t *testing.T) {
 	}{
 		{
 			name:     "ETH",
-			transfer: NewETHTransfer(0.02, common.HexToAddress("0x0000000000000000000000000000000000000001")),
+			transfer: NewETHTransfer(decimal.NewFromFloat(0.02), common.HexToAddress("0x0000000000000000000000000000000000000001")),
 			want: `token_type,token_address,receiver,amount,id
-native,0x0000000000000000000000000000000000000000,0x0000000000000000000000000000000000000001,0.02,0
+native,,0x0000000000000000000000000000000000000001,0.02,0
 `,
 		},
 		{
 			name:     "ERC20",
-			transfer: NewERC20Transfer(common.HexToAddress("0x2000000000000000000000000000000000000000"), 0.1337, common.HexToAddress("0x0000000000000000000000000000000000000002")),
+			transfer: NewERC20Transfer(common.HexToAddress("0x2000000000000000000000000000000000000000"), decimal.NewFromFloat(0.1337), common.HexToAddress("0x0000000000000000000000000000000000000002")),
 			want: `token_type,token_address,receiver,amount,id
 erc20,0x2000000000000000000000000000000000000000,0x0000000000000000000000000000000000000002,0.1337,0
 `,

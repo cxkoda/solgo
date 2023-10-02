@@ -1,6 +1,7 @@
 package flagtype
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -222,6 +223,47 @@ func TestETHAddress(t *testing.T) {
 
 	for _, tt := range tests {
 		tt.do(t, &ETHAddress{})
+	}
+}
+
+func TestETHAddressSlice(t *testing.T) {
+	const raw1 = "9999888877776666555544443333222211110000"
+	const raw2 = "0000111122223333444455556666777788889999"
+	wantSingle := &ETHAddressSlice{common.HexToAddress(raw1)}
+	wantDouble := &ETHAddressSlice{common.HexToAddress(raw1), common.HexToAddress(raw2)}
+
+	tests := []valueTest[*ETHAddressSlice]{
+		{
+			name:           "single without 0x prefix",
+			input:          raw1,
+			canonicalInput: "0x" + raw1,
+			want:           wantSingle,
+		},
+		{
+			name:  "single with 0x prefix",
+			input: "0x" + raw1,
+			want:  wantSingle,
+		},
+		{
+			name:           "double without 0x prefix",
+			input:          strings.Join([]string{raw1, raw2}, ","),
+			canonicalInput: "0x" + raw1 + ",0x" + raw2,
+			want:           wantDouble,
+		},
+		{
+			name:  "double with 0x prefix",
+			input: strings.Join([]string{"0x" + raw1, "0x" + raw2}, ","),
+			want:  wantDouble,
+		},
+		{
+			name:           "invalid",
+			input:          raw1 + ",hello",
+			errDiffAgainst: notETHAddressErr("hello").Error(),
+		},
+	}
+
+	for _, tt := range tests {
+		tt.do(t, &ETHAddressSlice{})
 	}
 }
 

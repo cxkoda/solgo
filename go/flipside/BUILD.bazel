@@ -2,11 +2,16 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "flipside",
-    srcs = ["flipside.go"],
+    srcs = [
+        "common.go",
+        "createQueryRun.go",
+        "getQueryRun.go",
+        "getQueryRunResults.go",
+    ],
     importpath = "github.com/proofxyz/solgo/go/flipside",
     visibility = ["//visibility:public"],
     deps = [
-        "@com_github_gocarina_gocsv//:gocsv",
+        "//go/secrets",
         "@com_github_golang_glog//:glog",
     ],
 )

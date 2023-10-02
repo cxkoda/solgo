@@ -134,6 +134,40 @@ func (a *ETHAddress) Type() string {
 	return fmt.Sprintf("%T", a)
 }
 
+// An ETHAddressSlice is a go-ethereum Address (parsed as ETHAddresses).
+type ETHAddressSlice []common.Address
+
+// Set parses the raw, comma-separated hex strings as ETH addresses. The 0x prefix is optional.
+func (as *ETHAddressSlice) Set(raw string) error {
+	if raw == "" {
+		return nil
+	}
+
+	for _, v := range strings.Split(raw, ",") {
+		var a ETHAddress
+		if err := a.Set(v); err != nil {
+			return err
+		}
+		*as = append(*as, a.Address)
+	}
+
+	return nil
+}
+
+// Type returns the fully qualified type of a.
+func (a *ETHAddressSlice) Type() string {
+	return fmt.Sprintf("%T", a)
+}
+
+// String returns the ETHAddressSlice values as a comma-separated string.
+func (as ETHAddressSlice) String() string {
+	vals := make([]string, 0, len(as))
+	for _, v := range as {
+		vals = append(vals, v.String())
+	}
+	return strings.Join(vals, ",")
+}
+
 // A Date represents an ISO8601 date in the format YYYY-MM-DD. The resulting
 // time is midnight UTC on the date; i.e. the beginning of the day:
 // YYYY-MM-DDT00:00:00Z.
