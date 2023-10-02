@@ -1,0 +1,19 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "flipside",
+    srcs = ["flipside.go"],
+    importpath = "github.com/proofxyz/solgo/go/flipside",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gocarina_gocsv//:gocsv",
+        "@com_github_golang_glog//:glog",
+    ],
+)
+
+go_test(
+    name = "flipside_test",
+    srcs = ["flipside_test.go"],
+    embed = [":flipside"],
+    deps = ["@com_github_google_go_cmp//cmp"],
+)

@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package proof.indexing.firehose.eth;
+option go_package = "github.com/proofxyz/solgo/projects/indexing/firehose/proto/eth";
+
+import "proto/eth/eth.proto";
+import "proto/sf/ethereum/type/v2/type.proto";
+import "sf/firehose/v2/firehose.proto";
+
+// The HydrantService provides access to an Ethereum Firehose service but with
+// simplified API.
+service HydrantService {
+  // Events returns a stream of events.
+  rpc Events(EventsRequest) returns (stream BlockResponse);
+
+  // ERC721TransferEvents functions identically to Events() except that it
+  // overrides the EventsRequest.signature to be that of an ERC721 transfer.
+  rpc ERC721TransferEvents(EventsRequest) returns (stream BlockResponse);
+}
+
+message EventsRequest {
+  // Anonymous events are not supported.
+  repeated proof.eth.Event signatures = 1;
+      // https://linear.app/proofxyz/issue/ENG-620/ethpbeventsrequest-validation-in-typescript
+      // [ (validate.rules).repeated .min_items = 1 ];
+  // An empty set of addresses returns results for any contract.
+  repeated proof.eth.Address contracts = 2;
+
+  // Propagated, unchanged, to the Firehose server.
+  int64 start_block_num = 3;
+  uint64 stop_block_num = 4;
+  string cursor = 5;
+}
+
+message BlockResponse {
+  proof.eth.Block block = 1;
+
+  // Although the combination of cursor, firehose_block, and firehose_step
+  // now constitute the entire Firehose response, they are kept separate for
+  // backwards compatibility as originally only the cursor was propagated.
+
+  string cursor = 2;
+
+  // firehose_block is the raw message received from Firehose.
+  sf.ethereum.type.v2.Block firehose_block = 3;
+  sf.firehose.v2.ForkStep firehose_step = 4;
+}

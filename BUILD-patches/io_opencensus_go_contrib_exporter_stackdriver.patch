@@ -1,0 +1,67 @@
+--- BUILD.bazel
++++ BUILD.bazel
+@@ -35,7 +35,7 @@
+         "@go_googleapis//google/api:label_go_proto",
+         "@go_googleapis//google/api:metric_go_proto",
+         "@go_googleapis//google/api:monitoredres_go_proto",
+-        "@go_googleapis//google/devtools/cloudtrace/v2:cloudtrace_go_proto",
++        "@com_google_cloud_go_trace//apiv2/tracepb",
+         "@go_googleapis//google/monitoring/v3:monitoring_go_proto",
+         "@go_googleapis//google/rpc:status_go_proto",
+         "@io_bazel_rules_go//proto/wkt:any_go_proto",
+@@ -102,7 +102,7 @@
+         "@go_googleapis//google/api:label_go_proto",
+         "@go_googleapis//google/api:metric_go_proto",
+         "@go_googleapis//google/api:monitoredres_go_proto",
+-        "@go_googleapis//google/devtools/cloudtrace/v2:cloudtrace_go_proto",
++        "@com_google_cloud_go_trace//apiv2/tracepb",
+         "@go_googleapis//google/monitoring/v3:monitoring_go_proto",
+         "@go_googleapis//google/rpc:code_go_proto",
+         "@go_googleapis//google/rpc:status_go_proto",
+
+--- trace.go
++++ trace.go
+@@ -24,7 +24,7 @@
+ 	tracingclient "cloud.google.com/go/trace/apiv2"
+ 	"go.opencensus.io/trace"
+ 	"google.golang.org/api/support/bundler"
+-	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2"
++	"cloud.google.com/go/trace/apiv2/tracepb"
+ 	"google.golang.org/protobuf/proto"
+ 
+ 	commonpb "github.com/census-instrumentation/opencensus-proto/gen-go/agent/common/v1"
+
+--- trace_proto.go
++++ trace_proto.go
+@@ -26,7 +26,7 @@
+        "go.opencensus.io/plugin/ochttp"
+        "go.opencensus.io/trace"
+        monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
+-       tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2"
++       "cloud.google.com/go/trace/apiv2/tracepb"
+        statuspb "google.golang.org/genproto/googleapis/rpc/status"
+ )
+
+--- trace_test.go
++++ trace_test.go
+@@ -22,7 +22,7 @@
+        "time"
+ 
+        "go.opencensus.io/trace"
+-       tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2"
++       "cloud.google.com/go/trace/apiv2/tracepb"
+ )
+ 
+ func TestBundling(t *testing.T) {
+
+--- trace_proto_test.go
++++ trace_proto_test.go
+@@ -28,7 +28,7 @@
+        wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
+        "go.opencensus.io/trace"
+        monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
+-       tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2"
++       "cloud.google.com/go/trace/apiv2/tracepb"
+        codepb "google.golang.org/genproto/googleapis/rpc/code"
+        statuspb "google.golang.org/genproto/googleapis/rpc/status"
+        "google.golang.org/protobuf/encoding/prototext"

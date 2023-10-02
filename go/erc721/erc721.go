@@ -1,0 +1,409 @@
+// Package erc721 provides functionality associated with ERC721 NFTs.
+package erc721
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"path"
+	"sort"
+	"strings"
+	"time"
+
+	"cloud.google.com/go/storage"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/golang/glog"
+	"github.com/julienschmidt/httprouter"
+	"google.golang.org/api/option"
+
+	"github.com/proofxyz/solgo/contracts/erc"
+)
+
+// A Collection is a set of Metadata, each associated with a single token ID.
+type Collection map[TokenID]*Metadata
+
+// CollectionFromMetadata assumes that each token's ID is its index in the
+// received Metadata slice, returning the respective Collection map.
+func CollectionFromMetadata(md []*Metadata) Collection {
+	c := make(Collection)
+	for i, m := range md {
+		c[*TokenIDFromInt(i)] = m
+	}
+	return c
+}
+
+// Metadata carries a parsed JSON payload from ERC721 metadata, compatible with
+// OpenSea.
+type Metadata struct {
+	Name           string       `json:"name,omitempty"`
+	Description    string       `json:"description,omitempty"`
+	Image          string       `json:"image,omitempty"`
+	AnimationURL   string       `json:"animation_url,omitempty"`
+	ExternalURL    string       `json:"external_url,omitempty"`
+	CollectionName string       `json:"collection_name,omitempty"`
+	Attributes     []*Attribute `json:"attributes,omitempty"`
+}
+
+// MarshalJSONTo marshals the Metadata to JSON and writes it to the Writer,
+// returning the number of bytes written and any error that may occur.
+func (md *Metadata) MarshalJSONTo(w io.Writer) (int, error) {
+	buf, err := json.Marshal(md)
+	if err != nil {
+		return 0, fmt.Errorf("json.Marshal(%T): %v", md, err)
+	}
+	return w.Write(buf)
+}
+
+// An Attribute is a single attribute in Metadata.
+type Attribute struct {
+	TraitType   string             `json:"trait_type,omitempty"`
+	Value       interface{}        `json:"value"`
+	DisplayType OpenSeaDisplayType `json:"display_type,omitempty"`
+}
+
+// An OpenSeaDisplayType is an OpenSea-specific metadata concept to control how
+// their UI treats numerical values.
+//
+// See https://docs.opensea.io/docs/metadata-standards for details.
+type OpenSeaDisplayType int
+
+// Allowable OpenSeaDisplayType values.
+const (
+	DisplayDefault OpenSeaDisplayType = iota
+	DisplayNumber
+	DisplayBoostNumber
+	DisplayBoostPercentage
+	DisplayDate
+	endDisplayTypes // used for bounds checking
+)
+
+// String returns the display type as a string.
+func (t OpenSeaDisplayType) String() string {
+	switch t {
+	case DisplayDefault:
+		return ""
+	case DisplayNumber:
+		return "number"
+	case DisplayBoostNumber:
+		return "boost_number"
+	case DisplayBoostPercentage:
+		return "boost_percentage"
+	case DisplayDate:
+		return "date"
+	default:
+		return fmt.Sprintf("%T(%d)", t, t)
+	}
+}
+
+// MarshalJSON returns the display type as JSON.
+func (t OpenSeaDisplayType) MarshalJSON() ([]byte, error) {
+	if t == DisplayDefault {
+		return nil, nil
+	}
+	if t >= endDisplayTypes {
+		return nil, fmt.Errorf("unsupported %T = %d", t, t)
+	}
+	return []byte(fmt.Sprintf("%q", t.String())), nil
+}
+
+// UnmarshalJSON parses the JSON buffer into the display type.
+func (t *OpenSeaDisplayType) UnmarshalJSON(buf []byte) error {
+	var s string
+	if err := json.Unmarshal(buf, &s); err != nil {
+		return err
+	}
+
+	switch s {
+	case "":
+		*t = DisplayDefault
+	case "number":
+		*t = DisplayNumber
+	case "boost_number":
+		*t = DisplayBoostNumber
+	case "boost_percentage":
+		*t = DisplayBoostPercentage
+	case "date":
+		*t = DisplayDate
+	default:
+		return fmt.Errorf("unsupported %T = %q", *t, s)
+	}
+	return nil
+}
+
+// String returns a human-readable string of TraitType:Value.
+func (a *Attribute) String() string {
+	return fmt.Sprintf("%s:%v", a.TraitType, a.Value)
+}
+
+var servers map[string]*server
+
+// ChainAddressFunc returns contract addresses depending on chain ID
+type ChainAddressFunc func(uint64) (common.Address, error)
+
+// AsChainAddressFunc converts a map to a ChainAddressFunc
+func AsChainAddressFunc(chainAddrs map[uint64]common.Address) ChainAddressFunc {
+	return func(chainID uint64) (common.Address, error) {
+		addr, ok := chainAddrs[chainID]
+		if !ok {
+			return common.Address{}, fmt.Errorf("no address for chain %d", chainID)
+		}
+		return addr, nil
+	}
+}
+
+// A server couples a Server and Addresses, keyed by chain ID, to which an
+// Interface will be bound.
+type server struct {
+	*Server
+	chainAddrs ChainAddressFunc
+	ctor       Constructor
+}
+
+func init() {
+	servers = make(map[string]*server)
+}
+
+// A Constructor binds to an Address, exposing Interface methods. See
+// FromConcreteConstructor if using abigen code.
+type Constructor func(common.Address, bind.ContractBackend) (Interface, error)
+
+// FromConcreteConstructor generically creates a Constructor from a function
+// that returns a concrete type implementing Interface. It accepts all New*()
+// functions generated by abigen. For example:
+//
+//	FromConcreteConstructor(erc.New.NewIERC721)
+func FromConcreteConstructor[T Interface](ctor func(common.Address, bind.ContractBackend) (T, error)) Constructor {
+	return func(addr common.Address, b bind.ContractBackend) (Interface, error) {
+		return ctor(addr, b)
+	}
+}
+
+// MustRegisterServer registers an ERC721 metadata Server to be attached by
+// calls to AttachServers(). It is expected to be called in init() functions,
+// and errors are fatal to the binary.
+//
+// All MetadataEndpoints and ImageEndpoints will have their Path fields prefixed
+// with pathPrefix. The Server.Contract MUST be nil as it will be bound to the
+// provided Address by calls to AttachServers().
+//
+// If an Address is provided for a chain ID, AttachServers() will bind to this
+// address, using the Constructor, and populate the Server.Contract field
+// appropriately. The Constructor MAY be nil, in which case a generic IERC721
+// will be used. See Server documentation for behaviour of the Contract field.
+func MustRegisterServer(pathPrefix string, s Server, chainAddrs ChainAddressFunc, ctor Constructor) {
+	glog.V(1).Infof("Registering path prefix %q bound to ERC721 addresses at %v", pathPrefix, chainAddrs)
+	if err := registerServer(pathPrefix, &s, chainAddrs, ctor); err != nil {
+		glog.Fatal(err)
+	}
+}
+
+func registerServer(prefix string, s *Server, chainAddrs ChainAddressFunc, ctor Constructor) error {
+	if !strings.HasSuffix(prefix, "/") {
+		prefix = fmt.Sprintf("%s/", prefix)
+	}
+	if _, ok := servers[prefix]; ok {
+		return fmt.Errorf("path prefix %q already registered", prefix)
+	}
+
+	// These aren't pointers so we have to index back into the slice.
+	for i, md := range s.Metadata {
+		s.Metadata[i].Path = path.Join(prefix, md.Path)
+	}
+	for i, img := range s.Image {
+		s.Image[i].Path = path.Join(prefix, img.Path)
+	}
+
+	if s.Contract != nil {
+		return fmt.Errorf("%T.Contract must be nil for registration", s)
+	}
+	if ctor == nil {
+		ctor = FromConcreteConstructor(erc.NewIERC721)
+	}
+
+	servers[prefix] = &server{
+		Server:     s,
+		chainAddrs: chainAddrs,
+		ctor:       ctor,
+	}
+	return nil
+}
+
+// AttachServers attaches all Server.Handler()s to the mux for every Server
+// registered with MustRegisterServer().
+
+// If the Client is non-nil every server registered with an Address for the
+// Client's chain ID will be bound to the respective Address. See Server
+// documentation for behaviour of the Contract field, which is populated by this
+// step.
+func AttachServers(ctx context.Context, mux *http.ServeMux, client *ethclient.Client) error {
+	bigChain, err := client.ChainID(ctx)
+	if err != nil {
+		return fmt.Errorf("%T.ChainID(): %v", client, err)
+	}
+	if !bigChain.IsUint64() {
+		return fmt.Errorf("chain ID 0x%s not representable as uint64", bigChain.Text(16))
+	}
+	chainID := bigChain.Uint64()
+
+	// range over maps is random, which makes reading logs harder during dev and
+	// testing.
+	var prefixes []string
+	for p := range servers {
+		prefixes = append(prefixes, p)
+	}
+	sort.Strings(prefixes)
+
+	for _, prefix := range prefixes {
+		s := servers[prefix]
+		glog.Infof("Attaching %q to %T", prefix, mux)
+
+		boundTo, err := s.bindToContract(chainID, client)
+		if err != nil {
+			return err
+		}
+		if boundTo != nil {
+			glog.Infof("Bound %q to %v on chain %d", prefix, *boundTo, chainID)
+		} else {
+			glog.Infof("Not binding %q to a contract", prefix)
+		}
+
+		h, err := s.Handler()
+		if err != nil {
+			return fmt.Errorf("%T{%q}.Handler(): %v", s, prefix, err)
+		}
+		mux.Handle(prefix, h)
+	}
+
+	return nil
+}
+
+// bindToContract binds to the chain-specific Address for the the server. It
+// populates s.Server.Contract, which may remain nil if no Address is available
+// for the chainID. bindToContract assumes that chainID == client.ChainID().
+//
+// The returned Address, if non-nil, is the bound Address. It is provided merely
+// for logging purposes.
+func (s *server) bindToContract(chainID uint64, client *ethclient.Client) (*common.Address, error) {
+	if s.chainAddrs == nil {
+		return nil, nil
+	}
+
+	addr, err := s.chainAddrs(chainID)
+	if err != nil {
+		return nil, fmt.Errorf("%T(%d): %v", s.chainAddrs, chainID, err)
+	}
+
+	if addr == (common.Address{}) {
+		glog.Warningf("Got zero address on chain %d. Consider setting the address getter to nil.", chainID)
+		return nil, nil
+	}
+
+	c, err := s.ctor(addr, client)
+	if err != nil {
+		return nil, fmt.Errorf("NewIERC721(%v, %T): %v", addr, client, err)
+	}
+	s.Server.Contract = c
+
+	// TODO(arran) modify erc721.Interface to include the whole thing, including
+	// ERC165.
+	switch c := c.(type) {
+	case interface {
+		SupportsInterface(*bind.CallOpts, [4]byte) (bool, error)
+	}:
+		// TODO(arran) Automatically generate interface IDs, probably in
+		// //contracts/erc.
+		ok, err := c.SupportsInterface(nil, [4]byte{0x80, 0xac, 0x58, 0xcd}) // the ERC165 identifier for ERC721
+		if !ok || err != nil {
+			return nil, fmt.Errorf("%T.SupportsInterface(nil, [ERC721]) = %t, err = %v", c, ok, err)
+		}
+		glog.Infof("Confirmed %v as ERC721", addr)
+	default:
+		return nil, fmt.Errorf("%T is not ERC165", c)
+	}
+
+	return &addr, nil
+}
+
+const year = 365 * 24 * time.Hour
+
+// SignedURLImages wraps the provided MetadataHandler in a new one that sources
+// all images from a GCP Storage signed URL. The bucket name is held constant
+// for all images, while the object is derived from the Image field returned in
+// src().Image.
+func SignedURLImages(ctx context.Context, bucketName string, src MetadataHandler, opts ...option.ClientOption) (MetadataHandler, error) {
+	cl, err := storage.NewClient(ctx, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("storage.NewClient(…): %v", err)
+	}
+	bh := cl.Bucket(bucketName)
+
+	return func(ctx context.Context, contract Interface, tokenID *TokenID, req *http.Request, params httprouter.Params) (*Metadata, int, error) {
+		md, code, err := src(ctx, contract, tokenID, req, params)
+		if code != http.StatusOK || err != nil {
+			return nil, code, err
+		}
+
+		// Create a copy to avoid appending the image path to itself.
+		md = md.CloneShallow()
+		if err = md.SignImageURL(bh); err != nil {
+			return nil, http.StatusInternalServerError, fmt.Errorf("SignURL(bucketName = %v, image = %v): %v", bucketName, md.Image, err)
+		}
+		return md, http.StatusOK, nil
+	}, nil
+}
+
+// SignImageURL signs the Metadata's Image field with a GCS signed URL.
+func (md *Metadata) SignImageURL(bh *storage.BucketHandle) error {
+	url, err := md.SignedURL(bh, md.Image)
+	if err != nil {
+		return fmt.Errorf("%T.SignedURL(url=%s): %v", md, md.Image, err)
+	}
+	md.Image = url
+
+	return nil
+}
+
+// SignedURL signs the provided GCS URL with a signed URL and returns it.
+// All signed URLs use GCS's [v2 signing scheme] to be valid for a year (vs
+// [v4 signing scheme] which has a maximum lifetime of 7 days). When signing,
+// consider passing in a CloneShallow() to avoid mutating the original metadata.
+//
+// [v2 signing scheme]: https://cloud.google.com/storage/docs/access-control/signed-urls-v2
+// [v4 signing scheme]: https://cloud.google.com/storage/docs/access-control/signed-urls#example
+func (md *Metadata) SignedURL(bh *storage.BucketHandle, url string) (string, error) {
+	opts := &storage.SignedURLOptions{
+		Method: http.MethodGet,
+
+		// Hardcoding 1 year expiry for now.
+		// Ideally we would decrease this for testnet but we don't have info about the chain ID in here yet.
+		// It is fine for now since the main intent is to protect images that were not minted yet and we have to be careful with assets used on testnet anyway.
+		Expires: time.Now().Truncate(year).Add(year),
+		Scheme:  storage.SigningSchemeV2,
+	}
+	sURL, err := bh.SignedURL(url, opts)
+	if err != nil {
+		return "", fmt.Errorf("%T.SignedURL(%q, %+v): %v", bh, url, opts, err)
+	}
+	return sURL, nil
+}
+
+// CloneShallow returns a shallow copy of the Metadata to avoid mutating the
+// original. Signing URLs without creating a shallow copy can sometimes break
+// the URL by appending the URL onto itself.
+func (md *Metadata) CloneShallow() *Metadata {
+	clone := *md
+	return &clone
+}
+
+// Hash returns the keccak256 hash of the JSON-encoded Metadata.
+func (md *Metadata) Hash() common.Hash {
+	var b bytes.Buffer
+	json.NewEncoder(&b).Encode(md)
+	return crypto.Keccak256Hash(b.Bytes())
+}

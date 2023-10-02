@@ -1,0 +1,90 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_path")
+
+alias(
+    name = "godoc",
+    actual = "@org_golang_x_tools//cmd/godoc:godoc",
+)
+
+package_group(
+    # For expanding visibility of otherwise private packages to allow for
+    # inclusion in generated documentation.
+    name = "all_packages",
+    packages = ["//devtools/godoc/..."],
+)
+
+# Generates a synthetic GOROOT directory to be passed to `godoc --goroot`.
+# The rules is named go_path() as only the GOPATH sub-directory (src) of the
+# GOROOT is generated.
+go_path(
+    name = "goroot",
+    testonly = True,  # allow access to testonly packages
+    include_transitive = True,
+    deps = [
+        "//bazel/ts_proto_library/grpc_gen_ts",
+        "//contracts/delegate",
+        "//contracts/delegate/delegateimpl",
+        "//contracts/entropy",
+        "//contracts/entropy/entropyserver",
+        "//contracts/erc",
+        "//contracts/go/hotsigner",
+        "//contracts/projects/diamondexhibition",
+        "//contracts/projects/evolvingpixels",
+        "//contracts/projects/mythics",
+        "//demo/contract",
+        "//demo/proto",
+        "//demo/server",
+        "//go/cmd/delegations",
+        "//go/cmd/holders",
+        "//go/dbtx",
+        "//go/discordbot",
+        "//go/erc721",
+        "//go/eth",
+        "//go/ethkms",
+        "//go/ethtest",
+        "//go/flagtype",
+        "//go/flipside",
+        "//go/gcstest",
+        "//go/gnosis",
+        "//go/grpctest",
+        "//go/grpctest/proto",
+        "//go/httperr",
+        "//go/ipfs",
+        "//go/memconv",
+        "//go/oauthsrc",
+        "//go/proof",
+        "//go/protovalid",
+        "//go/secrets",
+        "//go/shuffle",
+        "//go/solcover",
+        "//go/solcover/srcmaptest",
+        "//go/spawner",
+        "//go/spawner/proto",
+        "//go/sync",
+        "//go/tenderly",
+        "//go/usbwallet",
+        "//projects/external/cockpunch/cockpunchserver",
+        "//projects/grails/grailsserver/grails1",
+        "//projects/grails/grailsserver/grails2",
+        "//projects/grails/grailsserver/grails3",
+        "//projects/grails/grailsserver/grails4",
+        "//projects/indexing/firehose",
+        "//projects/indexing/firehose/firehosetest",
+        "//projects/indexing/firehose/hydrant",
+        "//projects/indexing/firehose/proto/eth",
+        "//projects/nfts/mdserver",
+        "//projects/nfts/mdserver/diamondexhibition",
+        "//projects/nfts/mdserver/diamondpasses",
+        "//projects/nfts/mdserver/evolvingpixels",
+        "//projects/nfts/mdserver/mikatajima",
+        "//projects/nfts/mdserver/mythics",
+        "//projects/nfts/mdserver/mythics/mythicsmd",
+        "//projects/nfts/mythics",
+        "//projects/nfts/mythics/mythicschoice",
+        "//projects/nfts/nestingsign",
+        "//projects/tipping/discordbot",
+        "//projects/tipping/discordbot/db/migrations",
+        "//projects/tipping/discordbot/db/modelgen",
+        "//projects/tipping/discordbot/db/models",
+        "//proto/eth",
+    ],
+)

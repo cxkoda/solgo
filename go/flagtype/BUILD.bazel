@@ -1,0 +1,21 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "flagtype",
+    srcs = ["flagtype.go"],
+    importpath = "github.com/proofxyz/solgo/go/flagtype",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_ethereum_go_ethereum//common"],
+)
+
+go_test(
+    name = "flagtype_test",
+    srcs = ["flagtype_test.go"],
+    embed = [":flagtype"],
+    deps = [
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_h_fam_errdiff//:go_default_library",
+        "@com_github_spf13_pflag//:pflag",
+    ],
+)

@@ -1,0 +1,35 @@
+load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
+load("//bazel:defs.bzl", "ts_project")
+load("//bazel/js_bundled_binary:defs.bzl", "js_bundled_binary")
+
+ts_project(
+    name = "index_ts",
+    srcs = [
+        "index.ts",
+    ],
+    declaration = True,
+    tsconfig = {},
+    deps = [
+        "//:node_modules/commander",
+        "//demo/proto:demo_ts_proto",
+    ],
+)
+
+js_bundled_binary(
+    name = "client",
+    srcs = [":index_ts"],
+    entry_point = "index.js",
+    minify = True,
+    visibility = ["//demo:__subpackages__"],
+)
+
+jest_test(
+    name = "test",
+    config = "jest.config.js",
+    data = [
+        "client.test.js",  # TODO(aschlosberg) migrate Jest tests to Typescript
+        "//:node_modules/@bazel/runfiles",
+        "//demo/proto:demo_ts_proto",
+        "//demo/server",
+    ],
+)

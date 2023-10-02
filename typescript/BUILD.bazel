@@ -1,0 +1,17 @@
+load("//bazel:defs.bzl", "ts_project")
+
+exports_files(["grpc.ts"])
+
+ts_project(
+    name = "grpc",
+    srcs = [
+        "grpc.ts",
+    ],
+    declaration = True,
+    tsconfig = {},
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:node_modules/@grpc/grpc-js",
+        "//:node_modules/@types/node",
+    ],
+)

@@ -1,0 +1,44 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+load("//bazel/ts_proto_library:defs.bzl", "ts_proto_library")
+
+# Some targets created by macros also need to be visible.
+package(default_visibility = ["//visibility:public"])
+
+proto_library(
+    name = "eth_proto",
+    srcs = ["eth.proto"],
+    deps = [
+        "//proto/eth:eth_proto",
+        "@com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/type/v2:pbeth_proto",
+        "@com_github_streamingfast_proto//sf/firehose/v2:pbfirehose_proto",
+    ],
+)
+
+go_proto_library(
+    name = "eth_go_proto",
+    # keep
+    compilers = [
+        "@io_bazel_rules_go//proto:go_grpc",
+        "//:pgv_plugin_go",
+    ],
+    importpath = "github.com/proofxyz/solgo/projects/indexing/firehose/proto/eth",
+    proto = ":eth_proto",
+    deps = [
+        "//proto/eth",
+        "@com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/type/v2:type",
+        "@com_github_streamingfast_proto//sf/firehose/v2:firehose",
+    ],
+)
+
+go_library(
+    name = "eth",
+    embed = [":eth_go_proto"],
+    importpath = "github.com/proofxyz/solgo/projects/indexing/firehose/proto/eth",
+)
+
+ts_proto_library(
+    name = "eth_ts_proto",
+    proto = ":eth_proto",
+)

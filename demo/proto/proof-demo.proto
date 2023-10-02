@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package proof.demo.v1;
+option go_package = "github.com/proofxyz/solgo/demo/proto";
+
+service ProofDemoService {
+    // Abi returns the ABI of the contract.
+    rpc Abi(AbiRequest) returns (AbiResponse) {};
+
+    // Echo propagates the request payload to a deployed contract's own echo
+    // function, returning the echoed response as an end-to-end demonstration.
+    rpc Echo(EchoRequest) returns (EchoResponse) {};
+
+    // Count returns a stream of numbers.
+    rpc Count(CountRequest) returns (stream CountResponse) {};
+}
+
+message AbiRequest{}
+
+message AbiResponse{
+    string abi = 1;
+}
+
+message EchoRequest{
+    string payload = 1;
+}
+
+message EchoResponse{
+    string payload = 1;
+}
+
+message CountRequest {
+    uint32 end = 1;
+}
+
+message CountResponse {
+    uint32 number = 1;
+}

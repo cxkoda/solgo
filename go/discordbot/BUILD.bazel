@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "discordbot",
+    srcs = [
+        "discordbot.go",
+        "reactions.go",
+    ],
+    importpath = "github.com/proofxyz/solgo/go/discordbot",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_bwmarrin_discordgo//:discordgo",
+        "@com_github_golang_glog//:glog",
+    ],
+)

@@ -1,0 +1,26 @@
+See //BUILD-patches:com_github_streamingfast_ethereum.patch for rationale
+behind this change.
+
+--- pb/sf/ethereum/type/v2/BUILD.bazel
++++ pb/sf/ethereum/type/v2/BUILD.bazel
+@@ -1,4 +1,4 @@
+-load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test", "go_source")
+ 
+ go_library(
+     name = "type",
+@@ -36,3 +36,14 @@
+         "@com_github_stretchr_testify//require",
+     ],
+ )
++
++go_source(
++    name = "type_go_extensions",
++    srcs = ["type.go"],
++    deps = [
++        "@com_github_streamingfast_bstream//:bstream",
++        "@com_github_streamingfast_eth_go//:eth-go",
++        "@com_github_streamingfast_jsonpb//:jsonpb",
++    ],
++    visibility = ["//visibility:public"],
++)

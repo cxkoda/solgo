@@ -1,0 +1,447 @@
+syntax = "proto3";
+
+package proof.eth;
+option go_package = "github.com/proofxyz/solgo/proto/eth";
+
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+// Value represents an Ethereum value with strong typing.
+message Value {
+  oneof payload {
+    option (validate.required) = true;
+    // - The field name MUST match the solidity type exactly
+    // - If adding a type, the field numbers MUST NOT be changed; i.e. field
+    //   numbers MAY be out of order. Changing a field number is a breaking
+    //   change in protos.
+    Address address = 1;
+    bool bool = 2;
+    bytes bytes = 3;
+    string string = 4;
+
+    bytes bytes1 = 5 [
+      (validate.rules).bytes.len = 1,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes2 = 6 [
+      (validate.rules).bytes.len = 2,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes3 = 7 [
+      (validate.rules).bytes.len = 3,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes4 = 8 [
+      (validate.rules).bytes.len = 4,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes5 = 9 [
+      (validate.rules).bytes.len = 5,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes6 = 10 [
+      (validate.rules).bytes.len = 6,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes7 = 11 [
+      (validate.rules).bytes.len = 7,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes8 = 12 [
+      (validate.rules).bytes.len = 8,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes9 = 13 [
+      (validate.rules).bytes.len = 9,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes10 = 14 [
+      (validate.rules).bytes.len = 10,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes11 = 15 [
+      (validate.rules).bytes.len = 11,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes12 = 16 [
+      (validate.rules).bytes.len = 12,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes13 = 17 [
+      (validate.rules).bytes.len = 13,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes14 = 18 [
+      (validate.rules).bytes.len = 14,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes15 = 19 [
+      (validate.rules).bytes.len = 15,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes16 = 20 [
+      (validate.rules).bytes.len = 16,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes17 = 21 [
+      (validate.rules).bytes.len = 17,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes18 = 22 [
+      (validate.rules).bytes.len = 18,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes19 = 23 [
+      (validate.rules).bytes.len = 19,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes20 = 24 [
+      (validate.rules).bytes.len = 20,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes21 = 25 [
+      (validate.rules).bytes.len = 21,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes22 = 26 [
+      (validate.rules).bytes.len = 22,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes23 = 27 [
+      (validate.rules).bytes.len = 23,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes24 = 28 [
+      (validate.rules).bytes.len = 24,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes25 = 29 [
+      (validate.rules).bytes.len = 25,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes26 = 30 [
+      (validate.rules).bytes.len = 26,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes27 = 31 [
+      (validate.rules).bytes.len = 27,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes28 = 32 [
+      (validate.rules).bytes.len = 28,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes29 = 33 [
+      (validate.rules).bytes.len = 29,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes30 = 34 [
+      (validate.rules).bytes.len = 30,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes31 = 35 [
+      (validate.rules).bytes.len = 31,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes bytes32 = 36 [
+      (validate.rules).bytes.len = 32,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+
+    // Integers with >64 bits are represented as big-endian byte buffers
+    // with two's complement. As varint encoding is used for both int32 and
+    // int64 in the proto wire format, no space is saved using int32s and it
+    // simplifies code to use the same type for <=64 bits.
+    int64 int8 = 37
+        [ (validate.rules).int64.lte = 127, (validate.rules).int64.gte = -128 ];
+    int64 int16 = 38 [
+      (validate.rules).int64.lte = 32767,
+      (validate.rules).int64.gte = -32768
+    ];
+    int64 int24 = 39 [
+      (validate.rules).int64.lte = 8388607,
+      (validate.rules).int64.gte = -8388608
+    ];
+    int64 int32 = 40 [
+      (validate.rules).int64.lte = 2147483647,
+      (validate.rules).int64.gte = -2147483648
+    ];
+    int64 int40 = 41 [
+      (validate.rules).int64.lte = 549755813887,
+      (validate.rules).int64.gte = -549755813888
+    ];
+    int64 int48 = 42 [
+      (validate.rules).int64.lte = 140737488355327,
+      (validate.rules).int64.gte = -140737488355328
+    ];
+    int64 int56 = 43 [
+      (validate.rules).int64.lte = 36028797018963967,
+      (validate.rules).int64.gte = -36028797018963968
+    ];
+    int64 int64 = 44; // no validation as types match
+    bytes int72 = 45 [
+      (validate.rules).bytes.len = 9,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int80 = 46 [
+      (validate.rules).bytes.len = 10,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int88 = 47 [
+      (validate.rules).bytes.len = 11,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int96 = 48 [
+      (validate.rules).bytes.len = 12,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int104 = 49 [
+      (validate.rules).bytes.len = 13,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int112 = 50 [
+      (validate.rules).bytes.len = 14,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int120 = 51 [
+      (validate.rules).bytes.len = 15,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int128 = 52 [
+      (validate.rules).bytes.len = 16,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int136 = 53 [
+      (validate.rules).bytes.len = 17,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int144 = 54 [
+      (validate.rules).bytes.len = 18,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int152 = 55 [
+      (validate.rules).bytes.len = 19,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int160 = 56 [
+      (validate.rules).bytes.len = 20,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int168 = 57 [
+      (validate.rules).bytes.len = 21,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int176 = 58 [
+      (validate.rules).bytes.len = 22,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int184 = 59 [
+      (validate.rules).bytes.len = 23,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int192 = 60 [
+      (validate.rules).bytes.len = 24,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int200 = 61 [
+      (validate.rules).bytes.len = 25,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int208 = 62 [
+      (validate.rules).bytes.len = 26,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int216 = 63 [
+      (validate.rules).bytes.len = 27,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int224 = 64 [
+      (validate.rules).bytes.len = 28,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int232 = 65 [
+      (validate.rules).bytes.len = 29,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int240 = 66 [
+      (validate.rules).bytes.len = 30,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int248 = 67 [
+      (validate.rules).bytes.len = 31,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes int256 = 68 [
+      (validate.rules).bytes.len = 32,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+
+    // Unsigned integers with >64 bits are represented as big-endian byte
+    // buffers. See signed ints for rationale behind using uint64.
+    uint64 uint8 = 69 [ (validate.rules).uint64.lte = 255 ];
+    uint64 uint16 = 70 [ (validate.rules).uint64.lte = 65535 ];
+    uint64 uint24 = 71 [ (validate.rules).uint64.lte = 16777215 ];
+    uint64 uint32 = 72 [ (validate.rules).uint64.lte = 4294967295 ];
+    uint64 uint40 = 73 [ (validate.rules).uint64.lte = 1099511627775 ];
+    uint64 uint48 = 74 [ (validate.rules).uint64.lte = 281474976710655 ];
+    uint64 uint56 = 75 [ (validate.rules).uint64.lte = 72057594037927935 ];
+    uint64 uint64 = 76; // no validation as types match
+    bytes uint72 = 77 [
+      (validate.rules).bytes.max_len = 9,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint80 = 78 [
+      (validate.rules).bytes.max_len = 10,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint88 = 79 [
+      (validate.rules).bytes.max_len = 11,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint96 = 80 [
+      (validate.rules).bytes.max_len = 12,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint104 = 81 [
+      (validate.rules).bytes.max_len = 13,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint112 = 82 [
+      (validate.rules).bytes.max_len = 14,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint120 = 83 [
+      (validate.rules).bytes.max_len = 15,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint128 = 84 [
+      (validate.rules).bytes.max_len = 16,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint136 = 85 [
+      (validate.rules).bytes.max_len = 17,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint144 = 86 [
+      (validate.rules).bytes.max_len = 18,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint152 = 87 [
+      (validate.rules).bytes.max_len = 19,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint160 = 88 [
+      (validate.rules).bytes.max_len = 20,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint168 = 89 [
+      (validate.rules).bytes.max_len = 21,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint176 = 90 [
+      (validate.rules).bytes.max_len = 22,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint184 = 91 [
+      (validate.rules).bytes.max_len = 23,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint192 = 92 [
+      (validate.rules).bytes.max_len = 24,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint200 = 93 [
+      (validate.rules).bytes.max_len = 25,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint208 = 94 [
+      (validate.rules).bytes.max_len = 26,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint216 = 95 [
+      (validate.rules).bytes.max_len = 27,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint224 = 96 [
+      (validate.rules).bytes.max_len = 28,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint232 = 97 [
+      (validate.rules).bytes.max_len = 29,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint240 = 98 [
+      (validate.rules).bytes.max_len = 30,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint248 = 99 [
+      (validate.rules).bytes.max_len = 31,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+    bytes uint256 = 100 [
+      (validate.rules).bytes.max_len = 32,
+      (validate.rules).bytes.ignore_empty = true
+    ];
+  }
+}
+
+// Address represents an EVM address. It has its own specific type (as against
+// simply using bytes in Value.payload) because it is a common parameter in gRPC
+// requests and responses.
+message Address {
+  bytes bytes = 1 [
+    (validate.rules).bytes.max_len = 20,
+    (validate.rules).bytes.ignore_empty = true
+  ];
+}
+
+// Event represents an EVM event.
+//
+// Empty Arguments can be used to communicate parameters to determine the byte
+// identifier. For example, the ERC721 Transfer event can be represented as:
+// {
+//    name: "Transfer"
+//    arguments: {address: ""}
+//    arguments: {address: ""}
+//    arguments: {uint256: ""}
+// }
+message Event {
+  string name = 1;
+  repeated Argument arguments = 2;
+  Address emitter = 3;
+
+  // Output only. If present, MUST match repeated Arguments with the name field
+  // as the map key.
+  map<string, Argument> arguments_by_name = 4;
+  // Output only. The index of the event log relative to the transaction.
+  uint32 log_index = 5;
+}
+
+// An Argument represents a named Value, which MAY have null data although MUST
+// NOT have a nil payload field. This allows Arguments to represent event or
+// function signatures.
+message Argument {
+  string name = 1;
+  Value value = 2;
+  // Ignored if not an event.
+  bool indexed = 3;
+}
+
+// Hash represents a keccak256 hash of data. It is not itself a data type so
+// cannot be carried in a Value.
+message Hash { bytes bytes = 1 [ (validate.rules).bytes.len = 32 ]; }
+
+// Block represents some or all of the transactions in an EVM block.
+message Block {
+  uint64 number = 1;
+  google.protobuf.Timestamp time_stamp = 4;
+  Hash hash = 2;
+  repeated Transaction transactions = 3;
+}
+
+// Transaction represents an EVM transaction. Some fields MAY not be present
+// even if they were available in the raw chain data.
+message Transaction {
+  Hash hash = 1;
+  repeated Event logs = 2;
+}

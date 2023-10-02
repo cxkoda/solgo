@@ -1,0 +1,52 @@
+OpenCencus uses the regular WKT protos, not the ones provided by rules_go, so we
+have to patch to avoid multiple copies being passed to the linker.
+
+--- opencensus/proto/agent/common/v1/BUILD.bazel
++++ opencensus/proto/agent/common/v1/BUILD.bazel
+@@ -31,7 +31,7 @@
+     importpath = "github.com/census-instrumentation/opencensus-proto/gen-go/agent/common/v1",
+     proto = ":common_proto",
+     deps = [
+-        "@com_github_golang_protobuf//ptypes/timestamp:go_default_library",
++        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
+     ],
+ )
+ 
+
+--- opencensus/proto/trace/v1/BUILD.bazel
++++ opencensus/proto/trace/v1/BUILD.bazel
+@@ -61,8 +61,8 @@
+     proto = ":trace_proto",
+     deps = [
+         "//opencensus/proto/resource/v1:resource_proto_go",
+-        "@com_github_golang_protobuf//ptypes/timestamp:go_default_library",
+-        "@com_github_golang_protobuf//ptypes/wrappers:go_default_library",
++        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
++        "@io_bazel_rules_go//proto/wkt:wrappers_go_proto",
+     ],
+ )
+ 
+
+--- opencensus/proto/metrics/v1/BUILD.bazel
++++ opencensus/proto/metrics/v1/BUILD.bazel
+@@ -44,7 +44,7 @@
+     proto = ":metrics_proto",
+     deps = [
+         "//opencensus/proto/resource/v1:resource_proto_go",
+-        "@com_github_golang_protobuf//ptypes/timestamp:go_default_library",
+-        "@com_github_golang_protobuf//ptypes/wrappers:go_default_library",
++        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
++        "@io_bazel_rules_go//proto/wkt:wrappers_go_proto",
+     ],
+ )
+
+--- opencensus/proto/stats/v1/BUILD.bazel
++++ opencensus/proto/stats/v1/BUILD.bazel
+@@ -42,6 +42,6 @@
+     importpath = "github.com/census-instrumentation/opencensus-proto/gen-go/stats/v1",
+     proto = ":stats_proto",
+     deps = [
+-        "@com_github_golang_protobuf//ptypes/timestamp:go_default_library",
++        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
+     ],
+ )

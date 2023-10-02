@@ -1,0 +1,17 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "demo_test",
+    srcs = ["end2end_test.go"],
+    data = [
+        "//demo/client",
+        "//demo/server",
+    ],
+    deps = [
+        "@com_github_facebookgo_freeport//:freeport",
+        "@com_github_google_go_cmp//cmp",
+        "@io_bazel_rules_go//go/tools/bazel:go_default_library",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//credentials/insecure",
+    ],
+)

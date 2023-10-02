@@ -1,0 +1,19 @@
+--- ethtest/simbackend.go
++++ ethtest/simbackend.go
+@@ -102,7 +102,6 @@
+ 
+ 	coll, report := solcover.Collector()
+ 	cfg := sb.Blockchain().GetVMConfig()
+-	cfg.Debug = true
+ 	cfg.Tracer = coll
+ 	sb.coverageReport = report
+ 
+@@ -212,7 +211,7 @@
+ 
+ // BlockNumber returns the current block number.
+ func (sb *SimulatedBackend) BlockNumber() *big.Int {
+-	return sb.Blockchain().CurrentBlock().Number()
++	return new(big.Int).Set(sb.Blockchain().CurrentBlock().Number)
+ }
+ 
+ // FastForward calls sb.Commit() until sb.BlockNumber() >= blockNumber. It

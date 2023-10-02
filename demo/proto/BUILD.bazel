@@ -1,0 +1,34 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("//bazel/ts_proto_library:defs.bzl", "ts_proto_library")
+
+package(
+    default_visibility = [
+        "//demo:__subpackages__",
+        "//devtools/godoc:all_packages",
+    ],
+)
+
+proto_library(
+    name = "demo_proto",
+    srcs = ["proof-demo.proto"],
+)
+
+go_proto_library(
+    name = "demo_go_proto",
+    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
+    importpath = "github.com/proofxyz/solgo/demo/proto",
+    proto = ":demo_proto",
+)
+
+go_library(
+    name = "proto",
+    embed = [":demo_go_proto"],
+    importpath = "github.com/proofxyz/solgo/demo/proto",
+)
+
+ts_proto_library(
+    name = "demo_ts_proto",
+    proto = ":demo_proto",
+)

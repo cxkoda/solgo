@@ -1,0 +1,32 @@
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+package(default_testonly = True)
+
+go_library(
+    name = "srcmaptest",
+    srcs = ["srcmaptest.go"],
+    embed = [":contracts_sol_go"],  # keep
+    importpath = "github.com/proofxyz/solgo/go/solcover/srcmaptest",
+    visibility = [
+        "//devtools/godoc:all_packages",
+        "//go/solcover:__subpackages__",
+    ],
+)
+
+sol_binary(
+    name = "contracts_sol",
+    srcs = [
+        "CoverageTest.sol",
+        "SourceMapTest.sol",
+        "SourceMapTest2.sol",
+    ],
+    deps = ["@openzeppelin-contracts_4-7-3"],
+)
+
+sol_go_library(
+    name = "contracts_sol_go",
+    binary = ":contracts_sol",
+    pkg = "srcmaptest",
+)

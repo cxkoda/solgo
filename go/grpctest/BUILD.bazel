@@ -1,0 +1,29 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+package(default_testonly = True)
+
+go_library(
+    name = "grpctest",
+    srcs = ["grpctest.go"],
+    importpath = "github.com/proofxyz/solgo/go/grpctest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//credentials/insecure",
+        "@org_golang_google_grpc//test/bufconn",
+    ],
+)
+
+go_test(
+    name = "grpctest_test",
+    srcs = ["grpctest_test.go"],
+    embed = [":grpctest"],
+    deps = [
+        "//go/grpctest/proto",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_h_fam_errdiff//:go_default_library",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)

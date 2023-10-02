@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "dbtx",
+    srcs = ["dbtx.go"],
+    importpath = "github.com/proofxyz/solgo/go/dbtx",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//go/memconv",
+        "@com_github_hashicorp_go_multierror//:go-multierror",
+    ],
+)
+
+go_test(
+    name = "dbtx_test",
+    srcs = ["dbtx_test.go"],
+    embed = [":dbtx"],
+    deps = [
+        "//go/spawner",
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_jackc_pgx_v4//stdlib",
+    ],
+)

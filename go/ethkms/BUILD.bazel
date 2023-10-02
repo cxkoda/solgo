@@ -1,0 +1,40 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "ethkms",
+    srcs = [
+        "doc.go",
+        "gcp.go",
+    ],
+    importpath = "github.com/proofxyz/solgo/go/ethkms",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_ethereum_go_ethereum//crypto/secp256k1",
+        "@com_google_cloud_go_kms//apiv1",
+        "@com_google_cloud_go_kms//apiv1/kmspb",
+        "@org_golang_google_api//option",
+    ],
+)
+
+go_test(
+    name = "ethkms_test",
+    srcs = ["gcp_test.go"],
+    embed = [":ethkms"],
+    deps = [
+        "//go/eth",
+        "//go/grpctest",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind/backends",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//core",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_google_cloud_go_kms//apiv1/kmspb",
+        "@org_golang_google_api//option",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+        "@org_golang_google_protobuf//proto",
+    ],
+)

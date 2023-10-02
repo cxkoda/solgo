@@ -1,0 +1,53 @@
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@io_bazel_rules_go//proto:compiler.bzl", "go_proto_compiler")
+
+package(default_visibility = ["//visibility:public"])
+
+npm_link_all_packages(name = "node_modules")
+
+# gazelle:prefix github.com/proofxyz/solgo
+gazelle(
+    name = "gazelle",
+    command = "fix",
+)
+
+gazelle(
+    name = "gazelle_diff",
+    command = "fix",
+    extra_args = ["--mode=diff"],
+)
+
+#####################
+# protoc-gen-validate
+#####################
+
+# gazelle:go_proto_compilers @io_bazel_rules_go//proto:go_proto, //:pgv_plugin_go
+# gazelle:resolve proto validate/validate.proto @com_envoyproxy_protoc_gen_validate//validate:validate_proto
+# gazelle:resolve proto go validate/validate.proto @com_envoyproxy_protoc_gen_validate//validate:validate_go_proto
+# gazelle:resolve go github.com/envoyproxy/protoc-gen-validate/validate @com_envoyproxy_protoc_gen_validate//validate:validate_go
+
+go_proto_compiler(
+    name = "pgv_plugin_go",
+    options = ["lang=go"],
+    plugin = "@com_envoyproxy_protoc_gen_validate//:protoc-gen-validate",
+    suffix = ".pb.validate.go",
+    valid_archive = False,
+)
+
+# rules_go still uses the deprecated protoc-gen-go gRPC mode, which results in
+# different outputs to protoc-gen-go-grpc (particularly registration of services
+# on custom servers).
+go_proto_compiler(
+    name = "protoc_gen_go_grpc",
+    options = [
+        "require_unimplemented_servers=false",
+    ],
+    plugin = "@org_golang_google_grpc_cmd_protoc_gen_go_grpc//:protoc-gen-go-grpc",
+    suffix = "_grpc.pb.go",
+    deps = [
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)

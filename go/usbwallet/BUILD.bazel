@@ -1,0 +1,41 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "usbwallet",
+    srcs = [
+        "accounts.go",
+        "eventloop.go",
+        "ledger.go",
+        "wallet.go",
+    ],
+    importpath = "github.com/proofxyz/solgo/go/usbwallet",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//go/sync",
+        "@com_github_ethereum_go_ethereum//accounts",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//accounts/usbwallet",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_ethereum_go_ethereum//event",
+        "@com_github_golang_glog//:glog",
+        "@com_github_hashicorp_go_multierror//:go-multierror",
+    ],
+)
+
+go_test(
+    name = "usbwallet_test",
+    srcs = [
+        "doubles_test.go",
+        "wallet_test.go",
+    ],
+    embed = [":usbwallet"],
+    deps = [
+        "//go/sync",
+        "@com_github_ethereum_go_ethereum//accounts",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_ethereum_go_ethereum//event",
+    ],
+)

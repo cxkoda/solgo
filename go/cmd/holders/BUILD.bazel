@@ -1,0 +1,22 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "holders_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/proofxyz/solgo/go/cmd/holders",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//contracts/erc",
+        "//go/eth",
+        "//go/proof",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//common",
+        "@org_golang_x_sync//errgroup",
+    ],
+)
+
+go_binary(
+    name = "holders",
+    embed = [":holders_lib"],
+    visibility = ["//visibility:public"],
+)

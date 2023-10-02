@@ -1,0 +1,28 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "firehosetest",
+    testonly = True,
+    srcs = ["firehosetest.go"],
+    importpath = "github.com/proofxyz/solgo/projects/indexing/firehose/firehosetest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//go/ethtest",
+        "//go/grpctest",
+        "//projects/indexing/firehose",
+        "//projects/indexing/firehose/proto/eth",
+        "//proto/eth",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_ethereum_go_ethereum//ethclient",
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/type/v2:go_default_library",
+        "@com_github_streamingfast_proto//sf/firehose/v2:firehose",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+        "@org_golang_google_protobuf//testing/protocmp",
+        "@org_golang_google_protobuf//types/known/anypb",
+        "@org_golang_google_protobuf//types/known/timestamppb",
+    ],
+)

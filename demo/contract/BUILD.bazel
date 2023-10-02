@@ -1,0 +1,34 @@
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+package(
+    default_visibility = [
+        "//demo:__subpackages__",
+        "//devtools/godoc:all_packages",
+    ],
+)
+
+sol_binary(
+    name = "contract_sol",
+    srcs = ["Demo.sol"],
+)
+
+sol_go_library(
+    name = "contract_sol_go",
+    binary = ":contract_sol",
+    pkg = "contract",
+)
+
+go_library(
+    name = "contract",
+    embed = [":contract_sol_go"],  #keep
+    importpath = "github.com/proofxyz/solgo/demo/contract",  #keep
+)
+
+go_test(
+    name = "contract_test",
+    srcs = ["contract_test.go"],
+    embed = [":contract"],  #keep
+    deps = ["//go/ethtest"],
+)

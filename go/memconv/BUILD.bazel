@@ -1,0 +1,14 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "memconv",
+    srcs = ["memconv.go"],
+    importpath = "github.com/proofxyz/solgo/go/memconv",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "memconv_test",
+    srcs = ["memconv_test.go"],
+    embed = [":memconv"],
+)

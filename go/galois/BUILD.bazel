@@ -1,0 +1,30 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "galois",
+    srcs = [
+        "convolution.go",
+        "fft.go",
+        "galois.go",
+    ],
+    importpath = "github.com/proofxyz/solgo/contracts/go/galois",
+    visibility = [
+        "//contracts:all_and_godoc",
+        "//devtools/godoc:all_packages",
+    ],
+)
+
+go_test(
+    name = "galois_test",
+    srcs = [
+        "convolution_test.go",
+        "fft_test.go",
+        "galois_test.go",
+    ],
+    embed = [":galois"],
+    deps = [
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_ethereum_go_ethereum//crypto/bn256/cloudflare",
+        "@com_github_google_go_cmp//cmp",
+    ],
+)

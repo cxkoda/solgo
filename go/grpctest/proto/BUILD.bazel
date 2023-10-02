@@ -1,0 +1,29 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+package(
+    default_testonly = True,
+    default_visibility = [
+        "//devtools/godoc:all_packages",
+        "//go/grpctest:__subpackages__",
+    ],
+)
+
+proto_library(
+    name = "proto_proto",
+    srcs = ["echo.proto"],
+)
+
+go_proto_library(
+    name = "proto_go_proto",
+    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
+    importpath = "github.com/proofxyz/solgo/go/grpctest/proto",
+    proto = ":proto_proto",
+)
+
+go_library(
+    name = "proto",
+    embed = [":proto_go_proto"],
+    importpath = "github.com/proofxyz/solgo/go/grpctest/proto",
+)

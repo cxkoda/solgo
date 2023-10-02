@@ -1,0 +1,23 @@
+exports_files(glob(["*.patch"]))
+
+# Expose the tests / build targets of all patched targets to ensure that they're
+# included by CI as they're not covered by default.
+test_suite(
+    name = "external_tests",
+    tests = [
+        "@com_github_ethereum_go_ethereum//crypto/secp256k1:secp256k1_test",
+        "@com_github_datadog_zstd//:zstd_test",
+        # Although uniseg isn't patched, it has a strange setup that makes
+        # Gazelle fail without special build directives in the go_repository()
+        # call.
+        "@com_github_rivo_uniseg//:uniseg_test",
+    ],
+)
+
+alias(
+    # GitHub CI runs in an environment that doesn't work properly with USB
+    # tests. It suffices to simply demonstrate that the target builds with the
+    # cgo patches.
+    name = "karalabe_usb",
+    actual = "@com_github_karalabe_usb//:usb",
+)

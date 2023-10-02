@@ -1,0 +1,42 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "ethtest",
+    testonly = True,
+    srcs = [
+        "ethtest.go",
+        "rpcdouble.go",
+        "simbackend.go",
+    ],
+    importpath = "github.com/proofxyz/solgo/go/ethtest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//go/eth",
+        "//go/solcover",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind/backends",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//core",
+        "@com_github_ethereum_go_ethereum//core/state",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_ethereum_go_ethereum//internal/ethapi",
+        "@com_github_ethereum_go_ethereum//log",
+        "@com_github_ethereum_go_ethereum//params",
+        "@com_github_ethereum_go_ethereum//rpc",
+        "@org_golang_x_net//nettest",
+    ],
+)
+
+go_test(
+    name = "ethtest_test",
+    srcs = [
+        "rpcdouble_test.go",
+        "simbackend_test.go",
+    ],
+    embed = [":ethtest"],
+    deps = [
+        "@com_github_ethereum_go_ethereum//ethclient",
+        "@com_github_h_fam_errdiff//:go_default_library",
+    ],
+)

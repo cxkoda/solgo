@@ -1,0 +1,74 @@
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+load("//bazel/sol:defs.bzl", "sol_go_library")
+
+go_library(
+    name = "eth",
+    srcs = [
+        "client.go",
+        "converters.go",
+        "eth.go",
+        "nullable.go",
+        "signer.go",
+    ],
+    importpath = "github.com/proofxyz/solgo/go/eth",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//go/memconv",
+        "//go/secrets",
+        "@com_github_divergencetech_go_ethereum_hdwallet//:go-ethereum-hdwallet",
+        "@com_github_ethereum_go_ethereum//:go-ethereum",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_ethereum_go_ethereum//ethclient",
+        "@com_github_ethereum_go_ethereum//params",
+        "@com_github_google_tink_go//prf",
+        "@com_github_holiman_uint256//:uint256",
+        "@com_github_tyler_smith_go_bip39//:go-bip39",
+    ],
+)
+
+go_test(
+    name = "eth_test",
+    srcs = [
+        "client_test.go",
+        "eth_test.go",
+        "nullable_test.go",
+        "signer_test.go",
+    ],
+    embed = [
+        ":eth",
+        ":eth_test_sol_go",  # keep
+    ],
+    deps = [
+        "//go/ethtest",
+        "//go/secrets",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_ethereum_go_ethereum//ethclient",
+        "@com_github_gocarina_gocsv//:gocsv",
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_google_tink_go//keyset",
+        "@com_github_google_tink_go//prf",
+        "@com_github_google_tink_go//tink",
+        "@com_github_h_fam_errdiff//:go_default_library",
+        "@com_github_holiman_uint256//:uint256",
+    ],
+)
+
+sol_binary(
+    name = "eth_test_sol",
+    testonly = True,
+    srcs = ["RW.sol"],
+)
+
+sol_go_library(
+    name = "eth_test_sol_go",
+    testonly = True,
+    binary = ":eth_test_sol",
+    pkg = "eth",
+)

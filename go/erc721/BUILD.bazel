@@ -1,0 +1,60 @@
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "erc721",
+    srcs = [
+        "erc721.go",
+        "rarity.go",
+        "server.go",
+        "tokenid.go",
+    ],
+    importpath = "github.com/proofxyz/solgo/go/erc721",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//contracts/erc",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_ethereum_go_ethereum//ethclient",
+        "@com_github_golang_glog//:glog",
+        "@com_github_holiman_uint256//:uint256",
+        "@com_github_julienschmidt_httprouter//:httprouter",
+        "@com_google_cloud_go_storage//:storage",
+        "@org_golang_google_api//option",
+    ],
+)
+
+go_test(
+    name = "erc721_test",
+    srcs = [
+        "erc721_test.go",
+        "rarity_test.go",
+        "server_test.go",
+    ],
+    embed = [
+        ":erc721",
+        ":contract_sol_go",  # keep
+    ],
+    deps = [
+        "//go/ethtest",
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_google_go_cmp//cmp/cmpopts",
+        "@com_github_julienschmidt_httprouter//:httprouter",
+    ],
+)
+
+sol_binary(
+    name = "contract_sol",
+    testonly = True,
+    srcs = ["TestableERC721.sol"],
+    deps = ["@ERC721A_4-2-3"],
+)
+
+sol_go_library(
+    name = "contract_sol_go",
+    testonly = True,
+    binary = ":contract_sol",
+    pkg = "erc721",
+)

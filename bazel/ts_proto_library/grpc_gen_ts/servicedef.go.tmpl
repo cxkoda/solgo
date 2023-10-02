@@ -1,0 +1,91 @@
+/**
+GENERATED CODE - DO NOT EDIT
+**/
+
+import * as grpc from '@grpc/grpc-js';
+import * as pb from './{{.PBTarget}}';
+import * as proofgrpc from '{{.WorkspaceRelPath}}/typescript/grpc';
+
+{{with .DescriptorSet}}
+{{- range .File -}}
+	{{ $pkg := .Package }}
+	{{- range namespaces .Package}}
+
+export namespace {{.}} {
+	{{- end}}
+
+	{{- range .Service }}
+	{{ $svc := .Name }}
+
+export const {{$svc}}Definition: grpc.ServiceDefinition = {
+		{{range .Method -}}
+            {{ $method := .Name }}
+			{{- $input := join "" "pb" .InputType}}
+			{{- $output := join "" "pb" .OutputType -}}
+			{{$method}}: {
+				path: '/{{$pkg}}.{{$svc}}/{{$method}}',
+				requestStream: {{.GetClientStreaming}},
+				responseStream: {{.GetServerStreaming}},
+				requestSerialize: (msg: {{$input}}) => Buffer.from({{$input}}.encode(msg).finish()),
+				requestDeserialize: (buf: Buffer) => {{$input}}.decode(new Uint8Array(buf)),
+				responseSerialize: (msg: {{$output}}) => Buffer.from({{$output}}.encode(msg).finish()),
+				responseDeserialize: (buf: Buffer) => {{$output}}.decode(new Uint8Array(buf)),
+			},
+		{{end -}}
+		};
+
+const {{$svc}}Ctor = grpc.makeGenericClientConstructor(
+    {{$svc}}Definition, "{{join "." $pkg $svc}}"
+);
+
+export class {{$svc}}Client {
+    private client;
+
+    constructor(serverAddr: string, credentials: grpc.ChannelCredentials) {
+        this.client = new {{$svc}}Ctor(serverAddr, credentials);
+    }
+
+    {{range .Method}}
+        {{ $method := .Name }}
+        {{ $streaming := streaming . }}
+        {{- $input := join "" "pb" .InputType}}
+        {{- $output := join "" "pb" .OutputType -}}
+    
+        {{if eq $streaming "unary"}}
+    public {{$method}}(req: {{$input}}): Promise<{{$output}}> {
+        return new Promise<{{$output}}>((resolve, reject) => {
+            this.client.{{$method}}(req, (err: Error | null, resp: {{$output}}) => {
+                err ? reject(err) : resolve(resp);
+            });
+        });
+    }
+        {{end}}
+
+        {{if eq $streaming "client"}}
+    public {{$method}}(req: {{$input}}): void {
+        throw `{{$method}}: client streaming unsupported`;
+    }
+        {{end}}
+
+        {{if eq $streaming "server"}}
+    public {{$method}}(req: {{$input}}): proofgrpc.ClientReadableStream<{{$output}}> {
+        return new proofgrpc.ClientReadableStream<{{$output}}>(this.client.{{$method}}(req));
+    }
+        {{end}}
+
+        {{if eq $streaming "bidi"}}
+    public {{$method}}(req: {{$input}}): grpc.ClientDuplexStream<{{$output}}> {
+        return this.client.{{$method}}(req);
+    }
+        {{end}}
+    {{end}}
+}
+
+	{{end -}}
+
+	{{- range namespaces .Package}}
+}
+
+	{{- end}}
+{{end}}
+{{end}}

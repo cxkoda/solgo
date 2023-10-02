@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "httperr",
+    srcs = ["httperr.go"],
+    importpath = "github.com/proofxyz/solgo/go/httperr",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_golang_glog//:glog",
+        "@com_github_julienschmidt_httprouter//:httprouter",
+    ],
+)
+
+go_test(
+    name = "httperr_test",
+    srcs = ["httperr_test.go"],
+    embed = [":httperr"],
+    deps = [
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_google_go_cmp//cmp/cmpopts",
+        "@com_github_julienschmidt_httprouter//:httprouter",
+    ],
+)

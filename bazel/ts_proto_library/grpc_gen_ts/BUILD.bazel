@@ -1,0 +1,20 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "grpc_gen_ts_lib",
+    srcs = ["main.go"],
+    embedsrcs = ["servicedef.go.tmpl"],
+    importpath = "github.com/proofxyz/solgo/bazel/ts_proto_library/grpc_gen_ts",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@com_github_golang_glog//:glog",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//types/descriptorpb",
+    ],
+)
+
+go_binary(
+    name = "grpc_gen_ts",
+    embed = [":grpc_gen_ts_lib"],
+    visibility = ["//visibility:public"],
+)

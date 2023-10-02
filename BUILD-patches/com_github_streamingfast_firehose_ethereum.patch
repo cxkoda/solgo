@@ -1,0 +1,24 @@
+StreamingFast provide both the raw .proto files and pre-generated Go code. As we
+need to use the raw .proto in our own definitions, we ignore their pre-generated
+Go and use our own as a single source of truth (otherwise Go wouldn't link the
+duplicate packages). The BUILD file patched here is where the raw .proto files
+are homed.
+
+However, StreamingFast also extend their type.proto Go code with extra
+functionality. We therefore expose it as the :type_go_extensions target embedded
+here.
+
+--- proto/sf/ethereum/type/v2/BUILD.bazel
++++ proto/sf/ethereum/type/v2/BUILD.bazel
+@@ -19,7 +19,10 @@
+ 
+ go_library(
+     name = "type",
+-    embed = [":pbeth_go_proto"],
++    embed = [
++        ":pbeth_go_proto",
++        "@com_github_streamingfast_firehose_ethereum_types//pb/sf/ethereum/type/v2:type_go_extensions",
++    ],
+     importpath = "github.com/streamingfast/firehose-ethereum/types/pb/sf/ethereum/type/v2",
+     importpath_aliases = ["github.com/streamingfast/firehose-ethereum/types/pb/sf/ethereum/type"],
+     visibility = ["//visibility:public"],

@@ -1,0 +1,26 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_docker//container:container.bzl", "container_push")
+load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+
+go_library(
+    name = "hydrant_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/proofxyz/solgo/projects/indexing/firehose/hydrant",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//go/proof",
+        "//go/secrets",
+        "//projects/indexing/firehose",
+        "//projects/indexing/firehose/proto/eth",
+        "@com_github_golang_glog//:glog",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//reflection",
+    ],
+)
+
+go_binary(
+    name = "hydrant",
+    embed = [":hydrant_lib"],
+    visibility = ["//visibility:public"],
+)
+

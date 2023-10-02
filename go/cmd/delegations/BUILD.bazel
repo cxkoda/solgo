@@ -1,0 +1,34 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+
+go_library(
+    name = "delegations_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/proofxyz/solgo/go/cmd/delegations",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//contracts/delegate",
+        "//go/eth",
+        "//go/proof",
+        "@com_github_gocarina_gocsv//:gocsv",
+        "@org_golang_x_sync//errgroup",
+    ],
+)
+
+go_binary(
+    name = "delegations",
+    embed = [":delegations_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "delegations_test",
+    srcs = ["main_test.go"],
+    embed = [":delegations_lib"],
+    deps = [
+        "//contracts/delegate",
+        "//contracts/delegate/delegateimpl",
+        "//go/ethtest",
+        "@com_github_gocarina_gocsv//:gocsv",
+        "@com_github_google_go_cmp//cmp",
+    ],
+)

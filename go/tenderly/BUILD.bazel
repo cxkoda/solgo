@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "tenderly",
+    srcs = ["tenderly.go"],
+    importpath = "github.com/proofxyz/solgo/go/tenderly",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//go/secrets",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//ethclient",
+    ],
+)
+
+go_test(
+    name = "tenderly_test",
+    srcs = ["tenderly_test.go"],
+    embed = [":tenderly"],
+    deps = [
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_google_go_cmp//cmp",
+    ],
+)

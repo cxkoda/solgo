@@ -1,0 +1,110 @@
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+# github.com/streamingfast/firehose-ethereum mixes .proto files with the
+# generated .pb.go files, in the same repository. They use the go_package option
+# in the protos to indicate the package, and then place the generated files
+# there. This confuses Gazelle so we have to tell it resolve the generated files
+# by just compiling the proto. If merely importing into Go then it suffices to
+# have `gazelle:resolve go`, but if the raw proto files are imported then both
+# `proto` and `proto go` resolution must also be included.
+#
+# ************** IMPORTANT **************
+# If changing these directives, you MUST also change
+# _STREAMINGFAST_BUILD_DIRECTIVES in /go_repositories.bzl
+# ***************************************
+#
+# -----
+# Firehose types
+# -----
+# gazelle:resolve proto sf/firehose/v2/firehose.proto @com_github_streamingfast_proto//sf/firehose/v2:pbfirehose_proto
+# gazelle:resolve proto go sf/firehose/v2/firehose.proto @com_github_streamingfast_proto//sf/firehose/v2:firehose
+# gazelle:resolve go github.com/streamingfast/firehose-ethereum/types/pb/sf/ethereum/transform/v1 @com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/transform/v1:go_default_library
+#
+# -----
+# Ethereum types
+# -----
+# gazelle:resolve proto proto/sf/ethereum/type/v2/type.proto @com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/type/v2:pbeth_proto
+# gazelle:resolve proto go proto/sf/ethereum/type/v2/type.proto @com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/type/v2:type
+# gazelle:resolve go github.com/streamingfast/firehose-ethereum/types/pb/sf/ethereum/type/v2 @com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/type/v2:go_default_library
+#
+# -----
+# Solana types
+# -----
+# gazelle:resolve go github.com/streamingfast/sf-solana/types/pb/sf/solana/type/v2 @com_github_streamingfast_firehose_solana//proto/sf/solana/type/v2:go_default_library
+
+go_library(
+    name = "firehose",
+    srcs = [
+        "ethservice.go",
+        "firehose.go",
+    ],
+    importpath = "github.com/proofxyz/solgo/projects/indexing/firehose",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//go/oauthsrc",
+        "//go/secrets",
+        "//projects/indexing/firehose/proto/eth",
+        "//proto/eth",
+        "@com_github_ethereum_go_ethereum//accounts/abi",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_golang_glog//:glog",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/transform/v1:go_default_library",
+        "@com_github_streamingfast_firehose_ethereum//proto/sf/ethereum/type/v2:go_default_library",
+        "@com_github_streamingfast_firehose_solana//proto/sf/solana/type/v2:go_default_library",
+        "@com_github_streamingfast_proto//sf/firehose/v2:firehose",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//credentials",
+        "@org_golang_google_grpc//credentials/oauth",
+        "@org_golang_google_grpc//status",
+        "@org_golang_google_protobuf//types/known/anypb",
+        "@org_golang_x_oauth2//:oauth2",
+    ],
+)
+
+alias(
+    name = "fireeth",
+    actual = "@com_github_streamingfast_firehose_ethereum//cmd/fireeth",
+    # This doesn't build on Mac and we haven't deployed it yet so it's OK to
+    # defer diagnosis of the problem. There is an explicit build in the
+    # GitHub action to ensure that it still works on Linux.
+    tags = ["manual"],
+)
+
+go_test(
+    name = "firehose_test",
+    srcs = ["ethservice_test.go"],
+    embed = [
+        ":emitter_sol_go",  # keep
+    ],
+    deps = [
+        ":firehose",
+        "//projects/indexing/firehose/firehosetest",
+        "//projects/indexing/firehose/proto/eth",
+        "//proto/eth",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//core/types",
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_h_fam_errdiff//:go_default_library",
+        "@com_github_holiman_uint256//:uint256",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_protobuf//testing/protocmp",
+        "@org_golang_google_protobuf//types/known/timestamppb",
+    ],
+)
+
+sol_binary(
+    name = "emitter_sol",
+    testonly = True,
+    srcs = ["Emitter.sol"],
+)
+
+sol_go_library(
+    name = "emitter_sol_go",
+    testonly = True,
+    binary = ":emitter_sol",
+    pkg = "firehose_test",
+)

@@ -1,0 +1,11 @@
+--- apiv1/iam.go
++++ apiv1/iam.go
+@@ -16,7 +16,7 @@
+ 
+ import (
+ 	"cloud.google.com/go/iam"
+-	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
++	kmspb "cloud.google.com/go/kms/apiv1/kmspb"
+ )
+ 
+ // KeyRingIAM returns a handle to inspect and change permissions of a KeyRing.
