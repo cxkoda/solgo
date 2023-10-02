@@ -1,0 +1,100 @@
+Rust can depend on the library of a crate by using the crate name:
+https://github.com/alloy-rs/svm-rs/blob/master/crates/svm-builds/Cargo.toml#L17
+
+This patch updates references to use the separate library name:
+https://github.com/alloy-rs/svm-rs/blob/master/crates/svm-rs/Cargo.toml#L14
+
+--- src/error.rs
++++ src/error.rs
+@@ -44,7 +44,7 @@ pub enum SolcError {
+     FailedResolveImport(Box<SolcError>, PathBuf, PathBuf),
+     #[cfg(all(feature = "svm-solc", not(target_arch = "wasm32")))]
+     #[error(transparent)]
+-    SvmError(#[from] svm::SolcVmError),
++    SvmError(#[from] svm_lib::SolcVmError),
+     #[error("No contracts found at \"{0}\"")]
+     NoContracts(String),
+     #[error(transparent)]
+
+
+--- src/compile/mod.rs
++++ src/compile/mod.rs
+@@ -84,8 +84,8 @@
+ /// we should download.
+ /// The boolean value marks whether there was an error accessing the release list
+ #[cfg(all(feature = "svm-solc", not(target_arch = "wasm32")))]
+-pub static RELEASES: Lazy<(svm::Releases, Vec<Version>, bool)> =
+-    Lazy::new(|| match serde_json::from_str::<svm::Releases>(svm_builds::RELEASE_LIST_JSON) {
++pub static RELEASES: Lazy<(svm_lib::Releases, Vec<Version>, bool)> =
++    Lazy::new(|| match serde_json::from_str::<svm_lib::Releases>(svm_builds::RELEASE_LIST_JSON) {
+         Ok(releases) => {
+             let sorted_versions = releases.clone().into_versions();
+             (releases, sorted_versions, true)
+@@ -352,7 +352,7 @@
+         let _lock = take_solc_installer_lock();
+ 
+         // load the local / remote versions
+-        let versions = utils::installed_versions(svm::SVM_HOME.as_path()).unwrap_or_default();
++        let versions = utils::installed_versions(svm_lib::SVM_HOME.as_path()).unwrap_or_default();
+ 
+         let local_versions = Self::find_matching_installation(&versions, sol_version);
+         let remote_versions = Self::find_matching_installation(&RELEASES.1, sol_version);
+@@ -424,17 +424,17 @@
+     /// # }
+     /// ```
+     #[cfg(all(feature = "svm-solc", not(target_arch = "wasm32")))]
+-    pub async fn install(version: &Version) -> std::result::Result<Self, svm::SolcVmError> {
++    pub async fn install(version: &Version) -> std::result::Result<Self, svm_lib::SolcVmError> {
+         tracing::trace!("installing solc version \"{}\"", version);
+         crate::report::solc_installation_start(version);
+-        let result = svm::install(version).await;
++        let result = svm_lib::install(version).await;
+         crate::report::solc_installation_success(version);
+         result.map(Solc::new)
+     }
+ 
+     /// Blocking version of `Self::install`
+     #[cfg(all(feature = "svm-solc", not(target_arch = "wasm32")))]
+-    pub fn blocking_install(version: &Version) -> std::result::Result<Self, svm::SolcVmError> {
++    pub fn blocking_install(version: &Version) -> std::result::Result<Self, svm_lib::SolcVmError> {
+         use crate::utils::RuntimeOrHandle;
+ 
+         tracing::trace!("blocking installing solc version \"{}\"", version);
+@@ -444,9 +444,9 @@
+         // in tokio rt. see https://github.com/seanmonstar/reqwest/issues/1017
+         cfg_if::cfg_if! {
+             if #[cfg(target_arch = "wasm32")] {
+-                let installation = svm::blocking_install(version);
++                let installation = svm_lib::blocking_install(version);
+             } else {
+-                let installation = RuntimeOrHandle::new().block_on(svm::install(version));
++                let installation = RuntimeOrHandle::new().block_on(svm_lib::install(version));
+             }
+         };
+         match installation {
+@@ -454,7 +454,7 @@
+     #[cfg(all(feature = "svm-solc", not(target_arch = "wasm32")))]
+     pub fn verify_checksum(&self) -> Result<()> {
+         let version = self.version_short()?;
+-        let mut version_path = svm::version_path(version.to_string().as_str());
++        let mut version_path = svm_lib::version_path(version.to_string().as_str());
+         version_path.push(format!("solc-{}", version.to_string().as_str()));
+         tracing::trace!(target:"solc", "reading solc binary for checksum {:?}", version_path);
+         let content =
+@@ -860,13 +860,13 @@
+         let _lock = LOCK.lock();
+         let ver = "0.8.6";
+         let version = Version::from_str(ver).unwrap();
+-        if utils::installed_versions(svm::SVM_HOME.as_path())
++        if utils::installed_versions(svm_lib::SVM_HOME.as_path())
+             .map(|versions| !versions.contains(&version))
+             .unwrap_or_default()
+         {
+             Solc::blocking_install(&version).unwrap();
+         }
+         let res = Solc::find_svm_installed_version(version.to_string()).unwrap().unwrap();
+-        let expected = svm::SVM_HOME.join(ver).join(format!("solc-{ver}"));
++        let expected = svm_lib::SVM_HOME.join(ver).join(format!("solc-{ver}"));
+         assert_eq!(res.solc, expected);
+     }
+ 

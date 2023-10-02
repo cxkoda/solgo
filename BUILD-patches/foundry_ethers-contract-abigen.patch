@@ -1,0 +1,44 @@
+Bazel sandboxing requires there to be no unexpected writes inside the sandbox. This
+patch stops ethers-contract-abigen from writing to the sandbox when building. There
+may be unwanted side effects with this patch.
+
+Alternatives: 
+
+1. Running (& building) unsandboxed:
+bazel run @foundry//:forge__forge --spawn_strategy=local
+
+Tensorflow enforces local's deprecated predecessor for certain builds:
+https://github.com/tensorflow/tensorflow/commit/d38de202864f6a6729d1eec96a5d5e32f4cdefb2
+
+2. Allowing sandbox to be writable
+
+everywhere:
+bazel run @foundry//:forge__forge --sandbox_writable_path=/
+
+or more specifically:
+bazel run @foundry//:forge__forge --sandbox_writable_path=$HOME/.cache/bazel/
+
+as 
+
+3. Patch ethers-contract-abigen to read and write to a writable directory by default
+
+--- src/multi.rs
++++ src/multi.rs
+@@ -711,7 +711,7 @@
+     fn write_super_file(&self, path: &Path, is_crate: bool, single_file: bool) -> Result<()> {
+         let filename = if is_crate { "lib.rs" } else { "mod.rs" };
+         let contents = self.generate_super_contents(is_crate, single_file)?;
+-        fs::write(path.join(filename), contents)?;
++        // fs::write(path.join(filename), contents)?;
+         Ok(())
+     }
+ 
+@@ -721,7 +721,7 @@
+             shared.write_module_in_dir(path)?;
+         }
+         for binding in self.bindings.values() {
+-            binding.write_module_in_dir(path)?;
++            // binding.write_module_in_dir(path)?;
+         }
+         Ok(())
+     }

@@ -1,0 +1,16 @@
+This version of Foundry imports the same crate with two different versions:
+https://github.com/foundry-rs/foundry/blob/d369d2486f85576eec4ca41d277391dfdae21ba7/Cargo.lock#L5987-L6000
+
+Bazel incorrectly links the wrong version for ethers-core.
+
+--- BUILD.bazel
++++ BUILD.bazel
+@@ -36,7 +36,7 @@
+         "@foundry__rlp-0.5.2//:rlp",
+         "@foundry__serde-1.0.164//:serde",
+         "@foundry__serde_json-1.0.97//:serde_json",
+-        "@foundry__strum-0.24.1//:strum",
++        "@foundry__strum-0.25.0//:strum",
+         "@foundry__syn-2.0.18//:syn",
+         "@foundry__thiserror-1.0.40//:thiserror",
+         "@foundry__tiny-keccak-2.0.2//:tiny_keccak",

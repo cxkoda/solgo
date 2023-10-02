@@ -1,0 +1,58 @@
+Rust can depend on the library of a crate by using the crate name:
+https://github.com/alloy-rs/svm-rs/blob/master/crates/svm-builds/Cargo.toml#L17
+
+This patch updates references to use the separate library name:
+https://github.com/alloy-rs/svm-rs/blob/master/crates/svm-rs/Cargo.toml#L14
+
+--- build.rs
++++ build.rs
+@@ -1,7 +1,7 @@
+ #![allow(dead_code)]
+ 
+ use semver::Version;
+-use svm::Releases;
++use svm_lib::Releases;
+ 
+ /// The string describing the [svm::Platform] to build for
+ ///
+@@ -18,11 +18,11 @@ pub const SVM_TARGET_PLATFORM: &str = "SVM_TARGET_PLATFORM";
+ ///
+ /// if the `SVM_TARGET_PLATFORM` var is set, this will return the matching [svm::Platform],
+ /// otherwise the native platform will be used [svm::platform()].
+-fn get_platform() -> svm::Platform {
++fn get_platform() -> svm_lib::Platform {
+     if let Ok(s) = std::env::var(SVM_TARGET_PLATFORM) {
+         s.parse().unwrap()
+     } else {
+-        svm::platform()
++        svm_lib::platform()
+     }
+ }
+ 
+@@ -37,7 +37,7 @@ fn version_const_name(version: &Version) -> String {
+ fn add_build_info_constants(
+     writer: &mut build_const::ConstValueWriter,
+     releases: &Releases,
+-    platform: svm::Platform,
++    platform: svm_lib::Platform,
+ ) {
+     let mut version_idents = Vec::with_capacity(releases.builds.len());
+     let mut checksum_match_arms = Vec::with_capacity(releases.builds.len());
+@@ -98,7 +98,7 @@ pub fn get_checksum(version: &semver::Version) -> Option<Vec<u8>> {{
+ }
+ 
+ /// checks the current platform and adds it as constant
+-fn add_platform_const(writer: &mut build_const::ConstValueWriter, platform: svm::Platform) {
++fn add_platform_const(writer: &mut build_const::ConstValueWriter, platform: svm_lib::Platform) {
+     writer.add_raw(&format!(
+         r#"
+ /// The `svm::Platform` all constants were built for
+@@ -110,7 +110,7 @@ pub const TARGET_PLATFORM: &str = "{}";
+ 
+ fn generate() {
+     let platform = get_platform();
+-    let releases = svm::blocking_all_releases(platform).expect("Failed to fetch releases");
++    let releases = svm_lib::blocking_all_releases(platform).expect("Failed to fetch releases");
+ 
+     let mut writer = build_const::ConstWriter::for_build("builds")
+         .unwrap()
