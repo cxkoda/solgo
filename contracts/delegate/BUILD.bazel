@@ -1,0 +1,31 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary")
+
+sol_binary(
+    name = "delegate_sol",
+    srcs = ["IDelegationRegistry.sol"],
+    deps = [
+        "@delegation-registry_2d1a158b",
+    ],
+)
+
+sol_go_library(
+    name = "delegate_sol_go",
+    binary = ":delegate_sol",
+    pkg = "delegate",
+)
+
+go_library(
+    name = "delegate",
+    srcs = ["delegate.go"],
+    embed = [":delegate_sol_go"],  # keep
+    importpath = "github.com/proofxyz/solgo/contracts/delegate",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//go/eth",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_holiman_uint256//:uint256",
+    ],
+)

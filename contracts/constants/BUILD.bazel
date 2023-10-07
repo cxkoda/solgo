@@ -1,0 +1,36 @@
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_files")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_remappings", "sol_sources")
+
+sol_sources(
+    name = "constants",
+    srcs = glob(["src/**/*.sol"]),
+    remappings = {"proof/constants/": "./contracts/constants/src/"},
+    visibility = ["//contracts:__subpackages__"],
+    deps = [
+        "@ethier_0-55-0",
+        "@openzeppelin-contracts_4-8-1",
+    ],
+)
+
+sol_remappings(
+    name = "raw_remappings",
+    deps = [
+        ":constants",
+        "@ds-test_013e6c64",
+        "@forge-std_1-4-0",
+    ],
+)
+
+write_source_files(
+    name = "write_remappings",
+    files = {"remappings.txt": ":remappings"},
+)
+
+genrule(
+    name = "remappings",
+    srcs = [":raw_remappings"],
+    outs = ["workspace_rel_remappings.txt"],
+    cmd_bash = """
+cat $(location :raw_remappings) | sed "s|=./external/|=../../bazel-out/../external/|g" | sed "s|=./contracts/|=../|g" > $@
+""",
+)

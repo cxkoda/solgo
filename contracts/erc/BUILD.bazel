@@ -1,0 +1,24 @@
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+sol_binary(
+    name = "interfaces_sol",
+    srcs = ["Interfaces.sol"],
+    deps = [
+        "@openzeppelin-contracts_4-8-1",
+    ],
+)
+
+sol_go_library(
+    name = "interfaces_sol_go",
+    binary = ":interfaces_sol",
+    pkg = "erc",
+)
+
+go_library(
+    name = "erc",
+    embed = [":interfaces_sol_go"],  #keep
+    importpath = "github.com/proofxyz/solgo/contracts/erc",  #keep
+    visibility = ["//visibility:public"],
+)

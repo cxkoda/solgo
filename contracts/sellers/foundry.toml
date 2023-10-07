@@ -1,0 +1,23 @@
+[profile.default]
+src = './src'
+test = './test'
+out = 'forge-out'
+cache_path = 'forge-cache'
+solc_version = "0.8.19"
+gas_reports = ["*"]
+optimizer = true
+optimizer_runs = 9999
+ffi=true
+allow_paths = ['/',"../"] # See https://github.com/aspect-build/rules_sol/blob/df20faf05464254a1d2ab2a5e1dace335900bbc5/sol/private/sol_binary.bzl#L113
+
+[fmt]
+single_line_statement_blocks = "multi"
+number_underscore="thousands"
+wrap_comments=true
+
+
+[fuzz]
+runs = 1024
+
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config

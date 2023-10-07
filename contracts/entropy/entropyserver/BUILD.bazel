@@ -1,0 +1,64 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+load("@io_bazel_rules_docker//container:container.bzl", "container_push")
+load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+
+go_library(
+    name = "entropyserver_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/proofxyz/solgo/contracts/entropy/entropyserver",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//contracts/go/hotsigner",
+        "//go/eth",
+        "//go/secrets",
+        "@com_github_ethereum_go_ethereum//common/math",
+        "@com_github_ethereum_go_ethereum//ethclient",
+        "@com_github_golang_glog//:glog",
+        "@org_golang_x_time//rate",
+    ],
+)
+
+go_binary(
+    name = "entropyserver",
+    embed = [":entropyserver_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "entropyserver_test",
+    srcs = ["main_test.go"],
+    embed = [":entropyserver_lib"],
+    deps = [
+        "//contracts/entropy",
+        "//go/eth",
+        "//go/ethtest",
+        "@com_github_ethereum_go_ethereum//accounts/abi/bind",
+        "@com_github_ethereum_go_ethereum//common",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_ethereum_go_ethereum//event",
+        "@com_github_google_go_cmp//cmp",
+        "@com_github_google_go_cmp//cmp/cmpopts",
+    ],
+)
+
+go_image(
+    name = "image",
+    embed = [":entropyserver_lib"],
+    goarch = "amd64",
+    goos = "linux",
+    importpath = "github.com/proofxyz/solgo/contracts/entropyserver/image",
+    tags = ["manual"],
+)
+
+[container_push(
+    name = "push_%s_image" % env,
+    format = "Docker",
+    image = ":image",
+    registry = "gcr.io",
+    repository = "proof-b3db7/entropyserver-%s" % env,
+    skip_unchanged_digest = True,
+    tags = ["manual"],
+) for env in [
+    "staging",
+    "prod",
+]]
