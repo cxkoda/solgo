@@ -1,0 +1,55 @@
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_files")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary", "sol_remappings", "sol_sources")
+
+SOL_SRCS = glob(["src/**/*.sol"])
+
+SOL_DEPS = [
+    "//contracts/artblocks:artblocks_sol_src",
+    "//contracts/redemption:redemption_sol_src",
+    "//contracts/sellers:sellers_sol_src",
+    "@operator-filter-registry_1-4-1",
+]
+
+sol_sources(
+    name = "presets_sol_src",
+    srcs = SOL_SRCS,
+    remappings = {"proof/presets/": "./contracts/presets/src/"},
+    visibility = ["//contracts:__subpackages__"],
+    deps = SOL_DEPS,
+)
+
+# TODO(arran) make sol_binary.srcs accept a sol_sources by taking the union of the sol_sources.{srcs,deps} with the sol_binary{srcs.deps}
+
+sol_binary(
+    name = "presets_sol",
+    srcs = SOL_SRCS,
+    no_cbor_metadata = False,
+    optimize = True,
+    optimize_runs = 9999,
+    # TODO (dave): patch version pragma in the artblocks code so we can use more recent compilers
+    solc_version = "0.8.17",
+    deps = SOL_DEPS,
+)
+
+sol_remappings(
+    name = "raw_remappings",
+    deps = SOL_DEPS + [
+        "//contracts/constants",
+        "@ds-test_013e6c64",
+        "@forge-std_1-4-0",
+    ],
+)
+
+write_source_files(
+    name = "write_remappings",
+    files = {"remappings.txt": ":remappings"},
+)
+
+genrule(
+    name = "remappings",
+    srcs = [":raw_remappings"],
+    outs = ["workspace_rel_remappings.txt"],
+    cmd_bash = """
+cat $(location :raw_remappings) | sed "s|=./external/|=../../bazel-out/../external/|g" | sed "s|=./contracts/|=../|g" > $@
+""",
+)

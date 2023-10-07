@@ -1,0 +1,107 @@
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_bazel_lib//lib:jq.bzl", "jq")
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_files")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary", "sol_remappings", "sol_sources")
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+# TODO(dave) reuse sources target for the binary.
+
+sol_sources(
+    name = "entropy_sol_src",
+    srcs = [
+        "EntropyOracle.sol",
+        "EntropyOracleV2.sol",
+        "IEntropyOracle.sol",
+        "IEntropyOracleV2.sol",
+    ],
+    remappings = {"proof/entropy": "./contracts/entropy/"},
+    visibility = ["//contracts:__subpackages__"],
+    deps = [
+        "@ethier_0-55-0",
+        "@openzeppelin-contracts_4-8-1",
+    ],
+)
+
+sol_binary(
+    name = "entropy_sol",
+    srcs = [
+        "EntropyOracle.sol",
+        "EntropyOracleV2.sol",
+        "IEntropyOracle.sol",
+        "IEntropyOracleV2.sol",
+    ],
+    deps = [
+        "@ethier_0-54-0",
+        "@openzeppelin-contracts_4-8-1",
+    ],
+)
+
+sol_go_library(
+    name = "entropy_sol_go",
+    binary = ":entropy_sol",
+    pkg = "entropy",
+)
+
+go_library(
+    name = "entropy",
+    embed = [":entropy_sol_go"],  #keep
+    importpath = "github.com/proofxyz/solgo/contracts/entropy",  #keep
+    visibility = [
+        "//contracts:__subpackages__",
+        "//devtools/godoc:all_packages",
+    ],
+)
+
+# TODO(arran) generate foundry.toml similarly to remappings.txt. Although it
+# doesn't require directory paths, it'll be goo to have solc version and config
+# args (e.g. optimizer_runs) sharing a source of truth.
+
+sol_remappings(
+    name = "raw_remappings",
+    deps = [
+        ":entropy_sol_src",
+        "//contracts/constants",
+        "@ds-test_013e6c64",
+        "@forge-std_1-4-0",
+    ],
+)
+
+write_source_files(
+    name = "write_remappings",
+    files = {"remappings.txt": ":remappings"},
+)
+
+genrule(
+    name = "remappings",
+    srcs = [":raw_remappings"],
+    outs = ["workspace_rel_remappings.txt"],
+    cmd_bash = """
+cat $(location :raw_remappings) | sed "s|=./external/|=../../bazel-out/../external/|g" | sed "s|=./contracts/|=../../contracts/|g" > $@
+""",
+)
+
+# Lock in the compiled bytecode from the EntropyOracle contract. If it changes
+# then we can at least make an educated decision about whether we're happy for
+# it to be different to what's been deployed.
+#
+# TODO(arran) create a rule to do this.
+
+select_file(
+    name = "combined_json",
+    srcs = ":entropy_sol",
+    subpath = "combined.json",
+)
+
+jq(
+    name = "entropyoracle_bin",
+    srcs = [":combined_json"],
+    args = ["--raw-output"],
+    filter = """.contracts."contracts/entropy/EntropyOracle.sol:EntropyOracle".bin
+    """,
+)
+
+write_source_files(
+    name = "write_bin",
+    files = {"EntropyOracle.bin.hex": ":entropyoracle_bin"},
+)

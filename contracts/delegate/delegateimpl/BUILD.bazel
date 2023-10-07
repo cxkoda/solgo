@@ -1,0 +1,29 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary")
+
+sol_binary(
+    name = "delegateimpl_sol",
+    testonly = True,
+    srcs = ["DelegationRegistry.sol"],
+    deps = [
+        "@delegation-registry_2d1a158b",
+        "@openzeppelin-contracts_4-7-0",  # as used by the DelegationRegistry repo
+    ],
+)
+
+sol_go_library(
+    name = "delegateimpl_sol_go",
+    testonly = True,
+    binary = ":delegateimpl_sol",
+    pkg = "delegateimpl",
+)
+
+go_library(
+    name = "delegateimpl",
+    testonly = True,
+    srcs = ["doc.go"],
+    embed = [":delegateimpl_sol_go"],  # keep
+    importpath = "github.com/proofxyz/solgo/contracts/delegate/delegateimpl",
+    visibility = ["//visibility:public"],
+)

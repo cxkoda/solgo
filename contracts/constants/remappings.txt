@@ -1,0 +1,12 @@
+proof/constants/=../constants/src/
+ethier/=../../bazel-out/../external/ethier_0-55-0/contracts/
+ethier_root/=../../bazel-out/../external/ethier_0-55-0/
+@divergencetech/ethier=../../bazel-out/../external/ethier_0-55-0/
+openzeppelin-contracts/contracts/=../../bazel-out/../external/openzeppelin-contracts_4-8-1/contracts/
+openzeppelin-contracts/=../../bazel-out/../external/openzeppelin-contracts_4-8-1/contracts/
+openzeppelin-contracts_root/=../../bazel-out/../external/openzeppelin-contracts_4-8-1/
+@openzeppelin/=../../bazel-out/../external/openzeppelin-contracts_4-8-1/
+ds-test/=../../bazel-out/../external/ds-test_013e6c64/src/
+ds-test_root/=../../bazel-out/../external/ds-test_013e6c64/
+forge-std/=../../bazel-out/../external/forge-std_1-4-0/src/
+forge-std_root/=../../bazel-out/../external/forge-std_1-4-0/

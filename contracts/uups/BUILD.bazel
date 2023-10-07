@@ -1,0 +1,56 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("//bazel/sol:defs.bzl", "sol_go_library")
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_files")
+load("@aspect_rules_sol//sol:defs.bzl", "sol_binary", "sol_remappings", "sol_sources")
+
+SOL_SRCS = glob(["src/**/*.sol"])
+
+SOL_DEPS = [
+    "@forge-std_1-5-6",
+    "@openzeppelin-contracts-upgradeable_4-9-0",
+]
+
+sol_binary(
+    name = "uups_sol",
+    srcs = SOL_SRCS,
+    optimize = True,
+    optimize_runs = 9999,
+    solc_version = "0.8.19",
+    deps = SOL_DEPS,
+)
+
+sol_sources(
+    name = "uups_sol_src",
+    srcs = SOL_SRCS,
+    remappings = {"proof/uups/": "./contracts/uups/src/"},
+    visibility = ["//visibility:public"],
+    deps = SOL_DEPS,
+)
+
+
+# TODO(arran) generate foundry.toml similarly to remappings.txt. Although it
+# doesn't require directory paths, it'll be goo to have solc version and config
+# args (e.g. optimizer_runs) sharing a source of truth.
+
+sol_remappings(
+    name = "raw_remappings",
+    deps = [
+        ":uups_sol",
+        "//contracts/constants",
+        "@ds-test_013e6c64",
+    ],
+)
+
+write_source_files(
+    name = "write_remappings",
+    files = {"remappings.txt": ":remappings"},
+)
+
+genrule(
+    name = "remappings",
+    srcs = [":raw_remappings"],
+    outs = ["workspace_rel_remappings.txt"],
+    cmd_bash = """
+cat $(location :raw_remappings) | sed "s|=./external/|=../../bazel-out/../external/|g" | sed "s|=./contracts/|=../|g"  > $@
+""",
+)
