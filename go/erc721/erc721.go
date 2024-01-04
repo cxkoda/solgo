@@ -22,7 +22,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"google.golang.org/api/option"
 
-	"github.com/proofxyz/solgo/contracts/erc"
+	"github.com/cxkoda/solgo/contracts/erc"
 )
 
 // A Collection is a set of Metadata, each associated with a single token ID.

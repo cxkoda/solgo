@@ -13,7 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 
-	"github.com/proofxyz/solgo/go/secrets"
+	"github.com/cxkoda/solgo/go/secrets"
 )
 
 // Config contains the configuration for the Tenderly wrapper.

@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/oauth"
 
-	"github.com/proofxyz/solgo/go/oauthsrc"
+	"github.com/cxkoda/solgo/go/oauthsrc"
 
 	sfethpb "github.com/streamingfast/firehose-ethereum/types/pb/sf/ethereum/type/v2"
 	hosepb "github.com/streamingfast/pbgo/sf/firehose/v2"

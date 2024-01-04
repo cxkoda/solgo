@@ -15,12 +15,12 @@ import (
 	"github.com/google/tink/go/tink"
 	"github.com/h-fam/errdiff"
 
-	"github.com/proofxyz/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/go/ethtest"
 
 	// See eth_test.go for rationale behind a dot import. This MUST NOT be
 	// considered precedent outside of tests and SHOULD be avoided where
 	// possible.
-	. "github.com/proofxyz/solgo/go/eth"
+	. "github.com/cxkoda/solgo/go/eth"
 )
 
 const (

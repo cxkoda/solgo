@@ -1,6 +1,6 @@
 # Automatic Go documentation
 
-Start a `godoc` server at http://localhost:6060/pkg/github.com/proofxyz/,
+Start a `godoc` server at http://localhost:6060/pkg/github.com/cxkoda/,
 including generated files such as `*.pb.go` and Solidity contract bindings:
 
 ```Shell

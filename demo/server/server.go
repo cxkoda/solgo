@@ -15,8 +15,8 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 
-	"github.com/proofxyz/solgo/demo/contract"
-	pb "github.com/proofxyz/solgo/demo/proto"
+	"github.com/cxkoda/solgo/demo/contract"
+	pb "github.com/cxkoda/solgo/demo/proto"
 )
 
 func main() {

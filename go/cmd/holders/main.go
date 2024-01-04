@@ -19,9 +19,9 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/proofxyz/solgo/contracts/erc"
-	"github.com/proofxyz/solgo/go/eth"
-	"github.com/proofxyz/solgo/go/proof"
+	"github.com/cxkoda/solgo/contracts/erc"
+	"github.com/cxkoda/solgo/go/eth"
+	"github.com/cxkoda/solgo/go/proof"
 )
 
 func main() {

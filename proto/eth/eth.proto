@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package proof.eth;
-option go_package = "github.com/proofxyz/solgo/proto/eth";
+option go_package = "github.com/cxkoda/solgo/proto/eth";
 
 import "google/protobuf/timestamp.proto";
 import "validate/validate.proto";

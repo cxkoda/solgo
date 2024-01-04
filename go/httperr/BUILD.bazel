@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "httperr",
     srcs = ["httperr.go"],
-    importpath = "github.com/proofxyz/solgo/go/httperr",
+    importpath = "github.com/cxkoda/solgo/go/httperr",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_golang_glog//:glog",

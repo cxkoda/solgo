@@ -6,7 +6,7 @@ go_library(
         "discordbot.go",
         "reactions.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/discordbot",
+    importpath = "github.com/cxkoda/solgo/go/discordbot",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_bwmarrin_discordgo//:discordgo",

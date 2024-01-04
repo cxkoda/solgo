@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package proof.spawner;
-option go_package = "github.com/proofxyz/solgo/go/spawner/proto";
+option go_package = "github.com/cxkoda/solgo/go/spawner/proto";
 
 import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";

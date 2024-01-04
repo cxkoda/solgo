@@ -8,7 +8,7 @@ import (
 
 	"google.golang.org/protobuf/types/known/durationpb"
 
-	pb "github.com/proofxyz/solgo/go/spawner/proto"
+	pb "github.com/cxkoda/solgo/go/spawner/proto"
 )
 
 // Convenience functions for spawning one-off "processes" without an independent

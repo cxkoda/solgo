@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/proofxyz/solgo/go/ethtest"
-	"github.com/proofxyz/solgo/go/solcover/srcmaptest"
+	"github.com/cxkoda/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/go/solcover/srcmaptest"
 )
 
 func TestCoverageCollector(t *testing.T) {

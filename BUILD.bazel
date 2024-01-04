@@ -6,7 +6,7 @@ package(default_visibility = ["//visibility:public"])
 
 npm_link_all_packages(name = "node_modules")
 
-# gazelle:prefix github.com/proofxyz/solgo
+# gazelle:prefix github.com/cxkoda/solgo
 gazelle(
     name = "gazelle",
     command = "fix",

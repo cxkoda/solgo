@@ -4,7 +4,7 @@ go_library(
     name = "gcstest",
     testonly = True,
     srcs = ["gcstest.go"],
-    importpath = "github.com/proofxyz/solgo/go/gcstest",
+    importpath = "github.com/cxkoda/solgo/go/gcstest",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_ethereum_go_ethereum//crypto",

@@ -8,7 +8,7 @@ go_library(
     name = "srcmaptest",
     srcs = ["srcmaptest.go"],
     embed = [":contracts_sol_go"],  # keep
-    importpath = "github.com/proofxyz/solgo/go/solcover/srcmaptest",
+    importpath = "github.com/cxkoda/solgo/go/solcover/srcmaptest",
     visibility = [
         "//devtools/godoc:all_packages",
         "//go/solcover:__subpackages__",

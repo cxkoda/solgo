@@ -16,9 +16,9 @@ import (
 	"github.com/gocarina/gocsv"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/proofxyz/solgo/contracts/delegate"
-	"github.com/proofxyz/solgo/go/eth"
-	"github.com/proofxyz/solgo/go/proof"
+	"github.com/cxkoda/solgo/contracts/delegate"
+	"github.com/cxkoda/solgo/go/eth"
+	"github.com/cxkoda/solgo/go/proof"
 )
 
 func main() {

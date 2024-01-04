@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "dbtx",
     srcs = ["dbtx.go"],
-    importpath = "github.com/proofxyz/solgo/go/dbtx",
+    importpath = "github.com/cxkoda/solgo/go/dbtx",
     visibility = ["//visibility:public"],
     deps = [
         "//go/memconv",

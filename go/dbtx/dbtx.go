@@ -9,7 +9,7 @@ import (
 
 	"github.com/hashicorp/go-multierror"
 
-	"github.com/proofxyz/solgo/go/memconv"
+	"github.com/cxkoda/solgo/go/memconv"
 )
 
 // A Func is a function that performs actions within the scope of a single

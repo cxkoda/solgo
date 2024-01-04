@@ -20,7 +20,7 @@ go_library(
     name = "delegate",
     srcs = ["delegate.go"],
     embed = [":delegate_sol_go"],  # keep
-    importpath = "github.com/proofxyz/solgo/contracts/delegate",
+    importpath = "github.com/cxkoda/solgo/contracts/delegate",
     visibility = ["//visibility:public"],
     deps = [
         "//go/eth",

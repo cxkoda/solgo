@@ -10,7 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 
-	"github.com/proofxyz/solgo/go/secrets"
+	"github.com/cxkoda/solgo/go/secrets"
 )
 
 // A Dialer dials an Ethereum node URL that it sources from a secret store. This

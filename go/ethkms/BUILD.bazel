@@ -6,7 +6,7 @@ go_library(
         "doc.go",
         "gcp.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/ethkms",
+    importpath = "github.com/cxkoda/solgo/go/ethkms",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_ethereum_go_ethereum//common",

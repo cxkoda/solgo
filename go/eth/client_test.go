@@ -8,13 +8,13 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/proofxyz/solgo/go/ethtest"
-	"github.com/proofxyz/solgo/go/secrets"
+	"github.com/cxkoda/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/go/secrets"
 
 	// See eth_test.go for rationale behind a dot import. This MUST NOT be
 	// considered precedent outside of tests and SHOULD be avoided where
 	// possible.
-	. "github.com/proofxyz/solgo/go/eth"
+	. "github.com/cxkoda/solgo/go/eth"
 )
 
 func TestDialerFromFlag(t *testing.T) {

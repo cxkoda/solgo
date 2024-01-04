@@ -7,7 +7,7 @@ go_library(
         "fft.go",
         "galois.go",
     ],
-    importpath = "github.com/proofxyz/solgo/contracts/go/galois",
+    importpath = "github.com/cxkoda/solgo/contracts/go/galois",
     visibility = [
         "//contracts:all_and_godoc",
         "//devtools/godoc:all_packages",

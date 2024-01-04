@@ -4,7 +4,7 @@ go_library(
     name = "grpc_gen_ts_lib",
     srcs = ["main.go"],
     embedsrcs = ["servicedef.go.tmpl"],
-    importpath = "github.com/proofxyz/solgo/bazel/ts_proto_library/grpc_gen_ts",
+    importpath = "github.com/cxkoda/solgo/bazel/ts_proto_library/grpc_gen_ts",
     visibility = ["//visibility:private"],
     deps = [
         "@com_github_golang_glog//:glog",

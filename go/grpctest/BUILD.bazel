@@ -5,7 +5,7 @@ package(default_testonly = True)
 go_library(
     name = "grpctest",
     srcs = ["grpctest.go"],
-    importpath = "github.com/proofxyz/solgo/go/grpctest",
+    importpath = "github.com/cxkoda/solgo/go/grpctest",
     visibility = ["//visibility:public"],
     deps = [
         "@org_golang_google_grpc//:go_default_library",

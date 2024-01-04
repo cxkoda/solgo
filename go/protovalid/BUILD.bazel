@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "protovalid",
     srcs = ["protovalid.go"],
-    importpath = "github.com/proofxyz/solgo/go/protovalid",
+    importpath = "github.com/cxkoda/solgo/go/protovalid",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_golang_protobuf//proto:go_default_library",

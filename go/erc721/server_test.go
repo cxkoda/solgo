@@ -16,7 +16,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/julienschmidt/httprouter"
 
-	"github.com/proofxyz/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/go/ethtest"
 )
 
 func deploy(t *testing.T, totalSupply int64) Interface {

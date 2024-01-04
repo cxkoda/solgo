@@ -23,8 +23,8 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/proofxyz/solgo/go/eth"
-	"github.com/proofxyz/solgo/go/grpctest"
+	"github.com/cxkoda/solgo/go/eth"
+	"github.com/cxkoda/solgo/go/grpctest"
 )
 
 // A stubGCP always returns the same PEM when a public key is requested, and

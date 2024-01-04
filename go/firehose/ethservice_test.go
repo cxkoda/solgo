@@ -14,11 +14,11 @@ import (
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/proofxyz/solgo/projects/indexing/firehose"
-	"github.com/proofxyz/solgo/projects/indexing/firehose/firehosetest"
+	"github.com/cxkoda/solgo/projects/indexing/firehose"
+	"github.com/cxkoda/solgo/projects/indexing/firehose/firehosetest"
 
-	svcpb "github.com/proofxyz/solgo/projects/indexing/firehose/proto/eth"
-	ethpb "github.com/proofxyz/solgo/proto/eth"
+	svcpb "github.com/cxkoda/solgo/projects/indexing/firehose/proto/eth"
+	ethpb "github.com/cxkoda/solgo/proto/eth"
 )
 
 func TestEvents(t *testing.T) {

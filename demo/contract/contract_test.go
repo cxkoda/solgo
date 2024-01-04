@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/proofxyz/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/go/ethtest"
 )
 
 func TestContractEcho(t *testing.T) {

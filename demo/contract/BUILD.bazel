@@ -23,7 +23,7 @@ sol_go_library(
 go_library(
     name = "contract",
     embed = [":contract_sol_go"],  #keep
-    importpath = "github.com/proofxyz/solgo/demo/contract",  #keep
+    importpath = "github.com/cxkoda/solgo/demo/contract",  #keep
 )
 
 go_test(

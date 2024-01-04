@@ -10,7 +10,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/proofxyz/solgo/go/secrets"
+	"github.com/cxkoda/solgo/go/secrets"
 )
 
 // Config configures the flipside wrapper.

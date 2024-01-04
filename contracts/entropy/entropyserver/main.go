@@ -20,9 +20,9 @@ import (
 	"github.com/golang/glog"
 	"golang.org/x/time/rate"
 
-	"github.com/proofxyz/solgo/contracts/go/hotsigner"
-	"github.com/proofxyz/solgo/go/eth"
-	"github.com/proofxyz/solgo/go/secrets"
+	"github.com/cxkoda/solgo/contracts/go/hotsigner"
+	"github.com/cxkoda/solgo/go/eth"
+	"github.com/cxkoda/solgo/go/secrets"
 
 	_ "embed"
 )

@@ -18,9 +18,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	"github.com/proofxyz/solgo/contracts/entropy"
-	"github.com/proofxyz/solgo/go/eth"
-	"github.com/proofxyz/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/contracts/entropy"
+	"github.com/cxkoda/solgo/go/eth"
+	"github.com/cxkoda/solgo/go/ethtest"
 )
 
 const simBackendChainID = 1337

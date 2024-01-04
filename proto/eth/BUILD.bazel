@@ -22,7 +22,7 @@ go_proto_library(
         "//:pgv_plugin_go",
         "@io_bazel_rules_go//proto:go_proto",
     ],
-    importpath = "github.com/proofxyz/solgo/proto/eth",
+    importpath = "github.com/cxkoda/solgo/proto/eth",
     proto = ":eth_proto",
     deps = ["@com_envoyproxy_protoc_gen_validate//validate:validate_go_proto"],
 )
@@ -34,7 +34,7 @@ go_library(
         "eth.go",
     ],
     embed = [":eth_go_proto"],
-    importpath = "github.com/proofxyz/solgo/proto/eth",
+    importpath = "github.com/cxkoda/solgo/proto/eth",
     deps = [
         "@com_github_ethereum_go_ethereum//accounts/abi",
         "@com_github_ethereum_go_ethereum//common",

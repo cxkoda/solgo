@@ -16,7 +16,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/h-fam/errdiff"
 
-	"github.com/proofxyz/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/go/ethtest"
 
 	// These tests require ethtest.SimulatedBackend but that would result in a
 	// cyclical dependency. As this is limited to these tests and not the
@@ -24,7 +24,7 @@ import (
 	// and dot-import to avoid having to qualify the full package name. This
 	// MUST NOT be considered precedent outside of tests and SHOULD be avoided
 	// where possible.
-	. "github.com/proofxyz/solgo/go/eth"
+	. "github.com/cxkoda/solgo/go/eth"
 )
 
 func TestAddressPerLine(t *testing.T) {

@@ -18,9 +18,9 @@ import (
 	sfethpb "github.com/streamingfast/firehose-ethereum/types/pb/sf/ethereum/type/v2"
 	hosepb "github.com/streamingfast/pbgo/sf/firehose/v2"
 
-	"github.com/proofxyz/solgo/go/secrets"
-	svcpb "github.com/proofxyz/solgo/projects/indexing/firehose/proto/eth"
-	ethpb "github.com/proofxyz/solgo/proto/eth"
+	"github.com/cxkoda/solgo/go/secrets"
+	svcpb "github.com/cxkoda/solgo/projects/indexing/firehose/proto/eth"
+	ethpb "github.com/cxkoda/solgo/proto/eth"
 )
 
 type ethHandler struct {

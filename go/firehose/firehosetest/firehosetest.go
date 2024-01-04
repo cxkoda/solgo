@@ -1,7 +1,7 @@
 // Package firehosetest provides test doubles for the StreamingFast Firehose
 // service, coupled to EVM code running on a simulated blockchain.
 //
-// See the tests of the github.com/proofxyz firehose package for example usage.
+// See the tests of the github.com/cxkoda firehose package for example usage.
 package firehosetest
 
 import (
@@ -25,12 +25,12 @@ import (
 	sfethpb "github.com/streamingfast/firehose-ethereum/types/pb/sf/ethereum/type/v2"
 	hosepb "github.com/streamingfast/pbgo/sf/firehose/v2"
 
-	"github.com/proofxyz/solgo/go/ethtest"
-	"github.com/proofxyz/solgo/go/grpctest"
-	"github.com/proofxyz/solgo/projects/indexing/firehose"
+	"github.com/cxkoda/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/go/grpctest"
+	"github.com/cxkoda/solgo/projects/indexing/firehose"
 
-	svcpb "github.com/proofxyz/solgo/projects/indexing/firehose/proto/eth"
-	ethpb "github.com/proofxyz/solgo/proto/eth"
+	svcpb "github.com/cxkoda/solgo/projects/indexing/firehose/proto/eth"
+	ethpb "github.com/cxkoda/solgo/proto/eth"
 )
 
 // A Fake couples a bind.ContractBackend() running a real EVM implementation,

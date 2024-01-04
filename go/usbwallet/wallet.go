@@ -11,7 +11,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/hashicorp/go-multierror"
 
-	proofsync "github.com/proofxyz/solgo/go/sync"
+	proofsync "github.com/cxkoda/solgo/go/sync"
 )
 
 // Type defines a type of USB wallet.

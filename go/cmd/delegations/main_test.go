@@ -12,9 +12,9 @@ import (
 	"github.com/gocarina/gocsv"
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/proofxyz/solgo/contracts/delegate"
-	impl "github.com/proofxyz/solgo/contracts/delegate/delegateimpl"
-	"github.com/proofxyz/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/contracts/delegate"
+	impl "github.com/cxkoda/solgo/contracts/delegate/delegateimpl"
+	"github.com/cxkoda/solgo/go/ethtest"
 )
 
 const (

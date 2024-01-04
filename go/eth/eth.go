@@ -18,7 +18,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/holiman/uint256"
 
-	"github.com/proofxyz/solgo/go/memconv"
+	"github.com/cxkoda/solgo/go/memconv"
 )
 
 // Symbol is the ETH symbol.

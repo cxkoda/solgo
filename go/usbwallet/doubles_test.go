@@ -14,7 +14,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/event"
 
-	"github.com/proofxyz/solgo/go/sync"
+	"github.com/cxkoda/solgo/go/sync"
 )
 
 // fakeHub implements the hub interface, satisfying the minimum required methods

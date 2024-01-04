@@ -46,7 +46,7 @@ sol_go_library(
 go_library(
     name = "entropy",
     embed = [":entropy_sol_go"],  #keep
-    importpath = "github.com/proofxyz/solgo/contracts/entropy",  #keep
+    importpath = "github.com/cxkoda/solgo/contracts/entropy",  #keep
     visibility = [
         "//contracts:__subpackages__",
         "//devtools/godoc:all_packages",

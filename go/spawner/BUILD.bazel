@@ -7,7 +7,7 @@ go_library(
         "singletons.go",
         "spawner.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/spawner",
+    importpath = "github.com/cxkoda/solgo/go/spawner",
     visibility = ["//visibility:public"],
     deps = [
         "//go/spawner/proto",

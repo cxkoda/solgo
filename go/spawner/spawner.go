@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/proofxyz/solgo/go/spawner/proto"
+	pb "github.com/cxkoda/solgo/go/spawner/proto"
 )
 
 // New returns a newly constructed SpawnerServiceServer. Set poolMaxWait to 0 to

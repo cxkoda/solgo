@@ -8,7 +8,7 @@ go_library(
         "coverage.go",
         "solcover.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/solcover",
+    importpath = "github.com/cxkoda/solgo/go/solcover",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_bazelbuild_tools_jvm_autodeps//thirdparty/golang/parsers/util/offset:go_default_library",

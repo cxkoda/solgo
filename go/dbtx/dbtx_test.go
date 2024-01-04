@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/proofxyz/solgo/go/spawner"
+	"github.com/cxkoda/solgo/go/spawner"
 
 	_ "github.com/jackc/pgx/v4/stdlib" // postgres driver
 )

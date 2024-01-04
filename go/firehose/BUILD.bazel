@@ -40,7 +40,7 @@ go_library(
         "ethservice.go",
         "firehose.go",
     ],
-    importpath = "github.com/proofxyz/solgo/projects/indexing/firehose",
+    importpath = "github.com/cxkoda/solgo/projects/indexing/firehose",
     visibility = ["//visibility:public"],
     deps = [
         "//go/oauthsrc",

@@ -12,9 +12,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	"github.com/proofxyz/solgo/go/ethtest"
-	"github.com/proofxyz/solgo/go/solcover"
-	"github.com/proofxyz/solgo/go/solcover/srcmaptest"
+	"github.com/cxkoda/solgo/go/ethtest"
+	"github.com/cxkoda/solgo/go/solcover"
+	"github.com/cxkoda/solgo/go/solcover/srcmaptest"
 )
 
 func TestSourceMap(t *testing.T) {

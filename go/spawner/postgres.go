@@ -13,7 +13,7 @@ import (
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 
-	pb "github.com/proofxyz/solgo/go/spawner/proto"
+	pb "github.com/cxkoda/solgo/go/spawner/proto"
 
 	_ "github.com/jackc/pgx/v4/stdlib" // postgres driver
 )

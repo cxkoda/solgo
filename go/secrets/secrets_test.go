@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/proofxyz/solgo/go/grpctest"
+	"github.com/cxkoda/solgo/go/grpctest"
 )
 
 func TestSecretEndToEnd(t *testing.T) {

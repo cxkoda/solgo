@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/durationpb"
 
-	"github.com/proofxyz/solgo/go/grpctest"
-	"github.com/proofxyz/solgo/go/protovalid"
-	pb "github.com/proofxyz/solgo/go/spawner/proto"
+	"github.com/cxkoda/solgo/go/grpctest"
+	"github.com/cxkoda/solgo/go/protovalid"
+	pb "github.com/cxkoda/solgo/go/spawner/proto"
 )
 
 func TestPostgres(t *testing.T) {

@@ -10,7 +10,7 @@ go_library(
         "server.go",
         "tokenid.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/erc721",
+    importpath = "github.com/cxkoda/solgo/go/erc721",
     visibility = ["//visibility:public"],
     deps = [
         "//contracts/erc",

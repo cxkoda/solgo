@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "memconv",
     srcs = ["memconv.go"],
-    importpath = "github.com/proofxyz/solgo/go/memconv",
+    importpath = "github.com/cxkoda/solgo/go/memconv",
     visibility = ["//visibility:public"],
 )
 

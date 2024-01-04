@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "oauthsrc",
     srcs = ["oauthsrc.go"],
-    importpath = "github.com/proofxyz/solgo/go/oauthsrc",
+    importpath = "github.com/cxkoda/solgo/go/oauthsrc",
     visibility = ["//visibility:public"],
     deps = ["@org_golang_x_oauth2//:oauth2"],
 )

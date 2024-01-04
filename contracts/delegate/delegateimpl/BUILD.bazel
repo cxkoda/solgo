@@ -24,6 +24,6 @@ go_library(
     testonly = True,
     srcs = ["doc.go"],
     embed = [":delegateimpl_sol_go"],  # keep
-    importpath = "github.com/proofxyz/solgo/contracts/delegate/delegateimpl",
+    importpath = "github.com/cxkoda/solgo/contracts/delegate/delegateimpl",
     visibility = ["//visibility:public"],
 )

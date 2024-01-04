@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "flagtype",
     srcs = ["flagtype.go"],
-    importpath = "github.com/proofxyz/solgo/go/flagtype",
+    importpath = "github.com/cxkoda/solgo/go/flagtype",
     visibility = ["//visibility:public"],
     deps = ["@com_github_ethereum_go_ethereum//common"],
 )

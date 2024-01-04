@@ -6,7 +6,7 @@ go_library(
         "doc.go",
         "toggle.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/sync",
+    importpath = "github.com/cxkoda/solgo/go/sync",
     visibility = ["//visibility:public"],
 )
 

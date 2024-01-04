@@ -13,11 +13,11 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/proofxyz/solgo/go/proof"
-	"github.com/proofxyz/solgo/go/secrets"
+	"github.com/cxkoda/solgo/go/proof"
+	"github.com/cxkoda/solgo/go/secrets"
 
-	"github.com/proofxyz/solgo/projects/indexing/firehose"
-	svcpb "github.com/proofxyz/solgo/projects/indexing/firehose/proto/eth"
+	"github.com/cxkoda/solgo/projects/indexing/firehose"
+	svcpb "github.com/cxkoda/solgo/projects/indexing/firehose/proto/eth"
 )
 
 const (

@@ -17,8 +17,8 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 
-	"github.com/proofxyz/solgo/go/eth"
-	"github.com/proofxyz/solgo/go/solcover"
+	"github.com/cxkoda/solgo/go/eth"
+	"github.com/cxkoda/solgo/go/solcover"
 )
 
 // A SimulatedBackend embeds a go-ethereum SimulatedBackend and extends its

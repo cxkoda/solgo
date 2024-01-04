@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/holiman/uint256"
 
-	"github.com/proofxyz/solgo/go/eth"
+	"github.com/cxkoda/solgo/go/eth"
 )
 
 // New returns a new IDelegationRegistry binding using the provided backend. All

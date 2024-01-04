@@ -5,7 +5,7 @@ load("@io_bazel_rules_docker//go:image.bzl", "go_image")
 go_library(
     name = "entropyserver_lib",
     srcs = ["main.go"],
-    importpath = "github.com/proofxyz/solgo/contracts/entropy/entropyserver",
+    importpath = "github.com/cxkoda/solgo/contracts/entropy/entropyserver",
     visibility = ["//visibility:private"],
     deps = [
         "//contracts/go/hotsigner",
@@ -46,7 +46,7 @@ go_image(
     embed = [":entropyserver_lib"],
     goarch = "amd64",
     goos = "linux",
-    importpath = "github.com/proofxyz/solgo/contracts/entropyserver/image",
+    importpath = "github.com/cxkoda/solgo/contracts/entropyserver/image",
     tags = ["manual"],
 )
 

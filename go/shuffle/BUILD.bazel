@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "shuffle",
     srcs = ["shuffle.go"],
-    importpath = "github.com/proofxyz/solgo/go/shuffle",
+    importpath = "github.com/cxkoda/solgo/go/shuffle",
     visibility = ["//visibility:public"],
 )
 

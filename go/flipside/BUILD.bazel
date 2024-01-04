@@ -8,7 +8,7 @@ go_library(
         "getQueryRun.go",
         "getQueryRunResults.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/flipside",
+    importpath = "github.com/cxkoda/solgo/go/flipside",
     visibility = ["//visibility:public"],
     deps = [
         "//go/secrets",

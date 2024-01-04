@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/proofxyz/solgo/go/grpctest/proto"
+	pb "github.com/cxkoda/solgo/go/grpctest/proto"
 )
 
 type echo struct{}

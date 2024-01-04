@@ -19,6 +19,6 @@ sol_go_library(
 go_library(
     name = "erc",
     embed = [":interfaces_sol_go"],  #keep
-    importpath = "github.com/proofxyz/solgo/contracts/erc",  #keep
+    importpath = "github.com/cxkoda/solgo/contracts/erc",  #keep
     visibility = ["//visibility:public"],
 )

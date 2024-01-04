@@ -11,7 +11,7 @@ go_library(
         "nullable.go",
         "signer.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/eth",
+    importpath = "github.com/cxkoda/solgo/go/eth",
     visibility = ["//visibility:public"],
     deps = [
         "//go/memconv",

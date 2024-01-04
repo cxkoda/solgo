@@ -8,7 +8,7 @@ go_library(
         "rpcdouble.go",
         "simbackend.go",
     ],
-    importpath = "github.com/proofxyz/solgo/go/ethtest",
+    importpath = "github.com/cxkoda/solgo/go/ethtest",
     visibility = ["//visibility:public"],
     deps = [
         "//go/eth",

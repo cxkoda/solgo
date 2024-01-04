@@ -4,7 +4,7 @@ go_library(
     name = "firehosetest",
     testonly = True,
     srcs = ["firehosetest.go"],
-    importpath = "github.com/proofxyz/solgo/projects/indexing/firehose/firehosetest",
+    importpath = "github.com/cxkoda/solgo/projects/indexing/firehose/firehosetest",
     visibility = ["//visibility:public"],
     deps = [
         "//go/ethtest",
