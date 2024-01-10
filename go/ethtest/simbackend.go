@@ -284,3 +284,7 @@ func (sb *SimulatedBackend) CoverageReport() []byte {
 	}
 	return sb.coverageReport()
 }
+
+func (sb *SimulatedBackend) ChainID(ctx context.Context) (*big.Int, error) {
+	return sb.Blockchain().Config().ChainID, nil
+}
