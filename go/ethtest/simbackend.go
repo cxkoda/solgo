@@ -2,7 +2,6 @@
 package ethtest
 
 import (
-	"bytes"
 	"context"
 	"crypto/ecdsa"
 	"fmt"
@@ -60,10 +59,10 @@ func NewSimulatedBackend(numAccounts int) (*SimulatedBackend, error) {
 	}
 
 	createAccount := func(seed []byte) (*bind.TransactOpts, *ecdsa.PrivateKey, error) {
-		entropy := bytes.NewReader(crypto.Keccak512(seed))
-		key, err := ecdsa.GenerateKey(crypto.S256(), entropy)
+		// This is a bit stupid but it works
+		key, err := crypto.HexToECDSA(common.Bytes2Hex(crypto.Keccak256(seed)))
 		if err != nil {
-			return nil, nil, fmt.Errorf("ecdsa.GenerateKey(crypto.S256, [deterministic entropy; Keccak512(%q)]): %v", seed, err)
+			return nil, nil, fmt.Errorf("crypto.HexToECDSA([deterministic entropy; Keccak256(%q)]): %v", seed, err)
 		}
 
 		txOpts, err := bind.NewKeyedTransactorWithChainID(key, big.NewInt(1337))
